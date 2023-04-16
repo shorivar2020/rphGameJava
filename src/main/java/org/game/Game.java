@@ -1,6 +1,7 @@
 package org.game;
 
 import org.game.Entity.Door;
+import org.game.Entity.Exit;
 import org.game.Entity.Obstacle;
 import org.game.Entity.TrashCan;
 import org.game.Entity.item.Item;
@@ -32,6 +33,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private List<Door> doors;
     private List<TrashCan> trashCans;
     private List<Item> items;
+    private Exit exit;
 
     //Displays
     private GameOverView loseDisplay;
@@ -86,6 +88,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         List<Item> content = new ArrayList<>();
         content.add(new Key(150, 150, 1));
         trashCans.add(new TrashCan(150, 150, content));
+        exit = new Exit(1050, 200);
 
         //Displays
         loseDisplay = new GameOverView();
@@ -163,6 +166,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         for (TrashCan trashCan: trashCans){
             trashCan.draw(g2d);
         }
+        exit.draw(g2d);
     }
 
     @Override

@@ -2,6 +2,7 @@
 PJV project 2023 Shorina Varvara
 
 ## Gameplay
+#### Control with the keyboard WASD or arrow keys.
 The user controls the cat. The cat can look for things in garbage cans in the streets and pick up things in houses. With the key he can open doors. Each door has its own unique key. Food adds health. A collar adds health and strength. When in contact with the enemy, damage can be received, as well as you can hit the enemy. 
 
 ## List of classes
@@ -15,6 +16,7 @@ The user controls the cat. The cat can look for things in garbage cans in the st
 ##### |--- Entity //Objects with which you can interact
 ##### |#####|--- Entity.java [Abstract]
 ##### |#####|--- Door.java //For open need key
+##### |#####|--- Exit.java
 ##### |#####|--- Obstacle.java //Structures, trees and water bodies
 ##### |#####|--- TrashCan.java //Place for storing objects
 ##### |#####|--- enemy
