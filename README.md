@@ -5,7 +5,7 @@ PJV project 2023 Shorina Varvara
 The user controls the cat. The cat can look for things in garbage cans in the streets and pick up things in houses. With the key he can open doors. Each door has its own unique key. Food adds health. A collar adds health and strength. When in contact with the enemy, damage can be received, as well as you can hit the enemy. 
 
 ## List of classes
-com.example.rpggame
+
 ##### |
 ##### |--- Main.java
 ##### |--- Player.java
