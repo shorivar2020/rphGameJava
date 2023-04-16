@@ -6,7 +6,6 @@ The user controls the cat. The cat can look for things in garbage cans in the st
 
 ## List of classes
 
-##### |
 ##### |--- Main.java
 ##### |--- Player.java
 ##### |--- Map.java
