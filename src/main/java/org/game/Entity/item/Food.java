@@ -15,4 +15,8 @@ public class Food extends Item {
         g2d.setColor(Color.pink);
         g2d.fillRect(x, y, width, height);
     }
+
+    public int getFoodValue(){
+        return value;
+    }
 }

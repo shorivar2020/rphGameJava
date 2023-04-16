@@ -1,12 +1,21 @@
 package org.game;
 import org.game.Entity.Obstacle;
+import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
+import org.game.Entity.item.collar.Collar;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * The player class is controlled through the keyboards by the user.
+ * Moves around the map. Interacts with objects.
+ */
 public class Player {
 
     private int health;
+    private int damage;
     private static final int START_HEALTH = 9;
     private static final int SIZE = 50;
     private static final int SPEED = 5;
@@ -14,14 +23,15 @@ public class Player {
     private int x;
     private int y;
 
+    public List<Item> inventory;
+    public List<Collar> collar;
+
     public Player(int x, int y) {
         this.x = x;
         this.y = y;
+        inventory = new ArrayList<>();
     }
 
-//    public void moveLeft() {
-//        x -= SPEED;
-//    }
 
     private boolean checkObstacleCollision(List<Obstacle> obstacles, Rectangle newBounds) {
         for (Obstacle obstacle : obstacles) {
@@ -36,19 +46,39 @@ public class Player {
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         if (!checkObstacleCollision(obstacles, newBounds)) {
             x -= SPEED;
+        }else{
+            x += SPEED;
         }
     }
 
-    public void moveRight() {
-        x += SPEED;
+    public void moveRight(List<Obstacle> obstacles) {
+        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
+        if (!checkObstacleCollision(obstacles, newBounds)) {
+            x += SPEED;
+        }else{
+            x -= SPEED;
+        }
+
     }
 
-    public void moveUp() {
-        y -= SPEED;
+    public void moveUp(List<Obstacle> obstacles) {
+        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
+        if (!checkObstacleCollision(obstacles, newBounds)) {
+            y -= SPEED;
+        }else{
+            y += SPEED;
+        }
+
     }
 
-    public void moveDown() {
-        y += SPEED;
+    public void moveDown(List<Obstacle> obstacles) {
+        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
+        if (!checkObstacleCollision(obstacles, newBounds)) {
+            y += SPEED;
+        }else{
+            y -= SPEED;
+        }
+
     }
 
     public Rectangle getBounds() {
@@ -64,6 +94,18 @@ public class Player {
         return getBounds().intersects(rect);
     }
 
-    void pickup(Item item){}
+    void pickup (Item item){
+        inventory.add(item);
+    }
+
+    void wear(Collar collar){
+        inventory.add(collar);
+        health += collar.getHealth();
+        damage += collar.getDamage();
+    }
+
+    void eat (Food food){
+        health += food.getFoodValue();
+    }
 
 }

@@ -14,8 +14,8 @@ public class TrashCan extends Entity{
     void search(Player player){
     }
 
-    int width = 100;
-    int height = 200;
+    int width = 25;
+    int height = 25;
     public TrashCan(int x, int y, List<Item> content) {
         this.x = x;
         this.y = y;
@@ -24,7 +24,7 @@ public class TrashCan extends Entity{
 
     public void draw(Graphics2D g2d) {
         g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(x, y, width, height);
+        g2d.fillOval(x, y, width, height);
     }
 
     public Rectangle getBounds() {

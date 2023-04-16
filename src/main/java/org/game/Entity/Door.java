@@ -7,7 +7,7 @@ public class Door extends Entity{
     int doorNumber;
     boolean locked;
     int width = 100;
-    int height = 200;
+    int height = 25;
 
     public Door(int x, int y, int doorNumber) {
         this.x = x;
@@ -23,7 +23,7 @@ public class Door extends Entity{
     }
     void open(){}
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.blue);
+        g2d.setColor(Color.orange);
         g2d.fillRect(x, y, width, height);
     }
     public Rectangle getBounds() {

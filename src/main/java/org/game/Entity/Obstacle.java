@@ -11,7 +11,7 @@ public class Obstacle extends Entity{
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.BLACK);
+        g2d.setColor(Color.lightGray);
         g2d.fillRect(x, y, width, height);
     }
 
