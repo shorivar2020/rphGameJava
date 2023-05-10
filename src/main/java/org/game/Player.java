@@ -1,12 +1,18 @@
 package org.game;
+import org.game.Entity.Door;
+import org.game.Entity.Exit;
 import org.game.Entity.Obstacle;
+import org.game.Entity.TrashCan;
+import org.game.Entity.enemy.Enemy;
 import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
+import org.game.Entity.item.Key;
 import org.game.Entity.item.collar.Collar;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * The player class is controlled through the keyboards by the user.
@@ -14,9 +20,10 @@ import java.util.List;
  */
 public class Player {
 
-    private int health;
+    public int health;
     private int damage;
     private static final int START_HEALTH = 9;
+    private static final int START_DAMAGE = 5;
     private static final int SIZE = 50;
     private static final int SPEED = 5;
 
@@ -30,30 +37,109 @@ public class Player {
         this.x = x;
         this.y = y;
         inventory = new ArrayList<>();
+        health = START_HEALTH;
+        damage = START_DAMAGE;
     }
 
 
-    private boolean checkObstacleCollision(List<Obstacle> obstacles, Rectangle newBounds) {
+    private boolean checkObstacleCollision(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit, Rectangle newBounds) {
         for (Obstacle obstacle : obstacles) {
             if (obstacle.getBounds().intersects(newBounds)) {
+                return true;
+            }
+        }
+        for (Door door: doors) {
+            if (door.getBounds().intersects(newBounds)) {
+                for (Item item: inventory){
+                    if (item instanceof Key) {
+                        door.unlock((Key) item);
+                        System.out.println("UNLOCK");
+                        if(!door.locked){
+                            inventory.remove(item);
+                            System.out.println(inventory + "GO THROW DOOR");
+                            return false;
+                        }
+                    }
+                }
+                if(door.locked){
+                    return true;
+                }
+            }
+        }
+        if(exit.getBounds().intersects(newBounds)){
+            game.Win();
+        }
+        return false;
+    }
+
+    private boolean checkItemCollision(Game game, List<Item> items, List<TrashCan> trashCans, List<Door> doors, Rectangle newBounds) {
+        for (Item item: items) {
+            if (item instanceof Key) {
+               if (((Key) item).getBounds().intersects(newBounds)){
+                   System.out.println("I FOUND KEY");
+                   inventory.add(item);
+                   game.items.remove(item);
+                   return true;
+               }
+            }
+
+        }
+        for (TrashCan trashCan: trashCans) {
+            if (trashCan.getBounds().intersects(newBounds)) {
+                System.out.println("FIND IN TRASH");
+                for(Item item: trashCan.content){
+                    inventory.add(item);
+                    if(item instanceof Collar){
+                        wear((Collar) item);
+                    }
+                    if(item instanceof Food){
+                        eat((Food) item);
+                    }
+                    System.out.println("I found NEW ITEM");
+                }
+                System.out.println(inventory);
+                trashCan.content.removeAll(inventory);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean checkEnemyCollision(Game game, List<Enemy> enemies, Rectangle newBounds){
+        for(Enemy enemy: enemies){
+            if ((enemy).getBounds().intersects(newBounds)){
+                System.out.println("ENEMY");
                 return true;
             }
         }
         return false;
     }
 
-    public void moveLeft(List<Obstacle> obstacles) {
+    public void moveLeft(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if (!checkObstacleCollision(obstacles, newBounds)) {
+        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
+            System.out.println("CHECK COLLISION");
+        }
+        if(checkEnemyCollision(game, enemies, newBounds)){
+            System.out.println("CHECK ENEMY");
+        }
+        else if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             x -= SPEED;
         }else{
             x += SPEED;
         }
     }
 
-    public void moveRight(List<Obstacle> obstacles) {
+    public void moveRight(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if (!checkObstacleCollision(obstacles, newBounds)) {
+        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
+            System.out.println("CHECK COLLISION");
+        }
+        if(checkEnemyCollision(game, enemies, newBounds)){
+            System.out.println("CHECK ENEMY");
+        }
+        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             x += SPEED;
         }else{
             x -= SPEED;
@@ -61,9 +147,15 @@ public class Player {
 
     }
 
-    public void moveUp(List<Obstacle> obstacles) {
+    public void moveUp(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if (!checkObstacleCollision(obstacles, newBounds)) {
+        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
+            System.out.println("CHECK COLLISION");
+        }
+        if(checkEnemyCollision(game, enemies, newBounds)){
+            System.out.println("CHECK ENEMY");
+        }
+        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             y -= SPEED;
         }else{
             y += SPEED;
@@ -71,9 +163,15 @@ public class Player {
 
     }
 
-    public void moveDown(List<Obstacle> obstacles) {
+    public void moveDown(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if (!checkObstacleCollision(obstacles, newBounds)) {
+        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
+            System.out.println("CHECK COLLISION");
+        }
+        if(checkEnemyCollision(game, enemies, newBounds)){
+            System.out.println("CHECK ENEMY");
+        }
+        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             y += SPEED;
         }else{
             y -= SPEED;
@@ -94,18 +192,40 @@ public class Player {
         return getBounds().intersects(rect);
     }
 
-    void pickup (Item item){
+    public void pickup (Item item, TrashCan trashCan){
         inventory.add(item);
+        trashCan.content.remove(item);
+        item.taken = true;
+        //wear
+        //eat
     }
 
     void wear(Collar collar){
-        inventory.add(collar);
+        System.out.println("WEAR COLLAR");
         health += collar.getHealth();
         damage += collar.getDamage();
     }
 
     void eat (Food food){
+        System.out.println("EAT FOD AM-AM-AM");
         health += food.getFoodValue();
     }
 
+    public void addItemToInventory(Item item) {
+        inventory.add(item);
+    }
+
+    public void drawHealth(Graphics2D g2d){
+        g2d.setColor(Color.RED);
+        g2d.fillOval(300, 0, 25, 25);
+    }
+
+    public void takeDamage(int damage){
+        health = health - damage;
+    }
+
+    public void attackEnemy(Enemy enemy){
+        Random r = new Random();
+        enemy.takeDamage(r.nextInt(damage));
+    }
 }

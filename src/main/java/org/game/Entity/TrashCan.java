@@ -10,7 +10,7 @@ import java.util.List;
  *
  */
 public class TrashCan extends Entity{
-    List<Item> content;
+    public List<Item> content;
     void search(Player player){
     }
 

@@ -5,7 +5,7 @@ import java.awt.*;
 
 public class Door extends Entity{
     int doorNumber;
-    boolean locked;
+    public boolean locked;
     int width = 100;
     int height = 25;
 
@@ -13,12 +13,14 @@ public class Door extends Entity{
         this.x = x;
         this.y = y;
         this.doorNumber = doorNumber;
+        this.locked = true;
     }
-    void unlock(Key key){
+    public void unlock(Key key){
         if(key.isRightDoor(doorNumber)){
             locked = false;
+            System.out.println("OPEN");
         }else{
-            locked = true;
+            System.out.println("FALSE KEY");
         }
     }
     void open(){}

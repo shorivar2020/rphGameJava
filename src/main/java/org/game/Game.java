@@ -4,10 +4,15 @@ import org.game.Entity.Door;
 import org.game.Entity.Exit;
 import org.game.Entity.Obstacle;
 import org.game.Entity.TrashCan;
+import org.game.Entity.enemy.Dog;
+import org.game.Entity.enemy.Enemy;
+import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
 import org.game.Entity.item.Key;
+import org.game.Entity.item.collar.SilverCollar;
 
 import javax.swing.*;
+import javax.xml.stream.events.EndElement;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -28,12 +33,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private Player player;
 
+
     //Objects of Map
     private List<Obstacle> obstacles;
     private List<Door> doors;
     private List<TrashCan> trashCans;
-    private List<Item> items;
+    public List<Item> items;
     private Exit exit;
+    public List<Enemy> enemies;
 
     //Displays
     private GameOverView loseDisplay;
@@ -43,6 +50,15 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private boolean rightPressed;
     private boolean upPressed;
     private boolean downPressed;
+
+    private boolean objectInteraction;
+
+    private boolean gameFinishWin;
+    private boolean gameFinishLose;
+
+    private boolean showingInventory;
+
+
     //Sticky Block
 //    private Rectangle obstacle = new Rectangle(500, 300, 100, 50);
 
@@ -62,6 +78,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         doors = new ArrayList<>();
         trashCans = new ArrayList<>();
         items = new ArrayList<>();
+        enemies = new ArrayList<>();
 
         //|
         obstacles.add(new Obstacle(0, 0, 50, 600));
@@ -87,7 +104,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         doors.add(new Door(700,200, 1));
         List<Item> content = new ArrayList<>();
         content.add(new Key(150, 150, 1));
+        content.add(new Food(150, 150));
+        content.add(new SilverCollar());
         trashCans.add(new TrashCan(150, 150, content));
+        items.add(new Key(300, 150, 2));
+        enemies.add(new Dog(725, 250));
         exit = new Exit(1050, 200);
 
         //Displays
@@ -133,22 +154,29 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private void update() {
         //if .. && !obstacle Sticky Block
         if (leftPressed) {
-            player.moveLeft(obstacles);
+            player.moveLeft(this, obstacles, items, trashCans, doors, enemies, exit);
         }
 
         if (rightPressed) {
-            player.moveRight(obstacles);
+            player.moveRight(this, obstacles, items, trashCans, doors, enemies, exit);
         }
 
         if (upPressed) {
-            player.moveUp(obstacles);
+            player.moveUp(this, obstacles, items, trashCans, doors, enemies, exit);
         }
 
         if (downPressed) {
-            player.moveDown(obstacles);
+            player.moveDown(this, obstacles, items, trashCans, doors, enemies, exit);
         }
     }
 
+    public void Win(){
+        gameFinishWin = true;
+    }
+
+    public void Lose(){
+        gameFinishLose = true;
+    }
 
     @Override
     public void paintComponent(Graphics g) {
@@ -166,7 +194,41 @@ public class Game extends JPanel implements Runnable, KeyListener {
         for (TrashCan trashCan: trashCans){
             trashCan.draw(g2d);
         }
+        for( Item item: items){
+            item.draw(g2d);
+        }
+        for (Enemy enemy:enemies){
+            enemy.draw(g2d);
+        }
         exit.draw(g2d);
+        if(gameFinishWin){
+            wonDisplay.draw(g2d);
+        }
+        if(gameFinishLose){
+            loseDisplay.draw(g2d);
+        }
+        if (showingInventory) {
+            List<Item> inventoryItems = player.inventory;
+            int x = 10;
+            int y = 50;
+            for (Item item : inventoryItems) {
+                Item i = item;
+                i.x = x;
+                i.y = y;
+                i.draw(g2d);
+                x += 50;
+            }
+        }
+        //HEALTH PANEL
+        int x_count = 20;
+        g2d.setColor(Color.BLACK);
+        g2d.fillRect(0, 550, 400, 50);
+        for(int i = 0; i < player.health; i++){
+            g2d.setColor(Color.RED);
+            g2d.fillOval(x_count, 570, 20, 20);
+            x_count += 25;
+        }
+
     }
 
     @Override
@@ -196,6 +258,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
             case KeyEvent.VK_S:
                 downPressed = true;
                 break;
+            case KeyEvent.VK_I:
+                showingInventory = !showingInventory;
+                repaint();
+
+
         }
     }
 
@@ -226,12 +293,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
             case KeyEvent.VK_S:
                 downPressed = false;
                 break;
+
         }
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-
+        switch (e.getKeyCode()) {
+            case KeyEvent.VK_E:
+                objectInteraction = true;
+                break;
+        }
     }
 
 }
