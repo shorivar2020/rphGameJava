@@ -10,6 +10,9 @@ import org.game.Entity.enemy.Rat;
 import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
 import org.game.Entity.item.Key;
+import org.game.Entity.item.collar.Collar;
+import org.game.Entity.item.collar.GoldCollar;
+import org.game.Entity.item.collar.SilverCollar;
 
 import javax.swing.*;
 import java.awt.*;
@@ -83,7 +86,6 @@ public class Game extends JPanel implements Runnable, KeyListener {
         char[][] map = new char[40][20];
         try {
             map = MapLoader.loadMap("src/main/resources/map.txt");
-            // использовать карту для вашей игры
         } catch (FileNotFoundException e) {
             System.out.println("Файл не найден: " + e.getMessage());
         }
@@ -119,12 +121,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
                     door_count++;
                 }
                 if(map[j][i] == 8){
-                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
-                    door_count++;
+                    items.add(new SilverCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 9){
-                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
-                    door_count++;
+                    items.add(new GoldCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 10){
                     items.add(new Food(x_loc, y_loc));
@@ -263,9 +263,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         for (TrashCan trashCan: trashCans){
             trashCan.draw(g2d);
         }
-//        for( Item item: items){
-//            item.draw(g2d);
-//        }
+        for( Item item: items){
+            item.draw(g2d);
+        }
         for (Enemy enemy:enemies){
             enemy.draw(g2d);
         }
@@ -281,11 +281,22 @@ public class Game extends JPanel implements Runnable, KeyListener {
             int x = 10;
             int y = 50;
             for (Item item : inventoryItems) {
-                Item i = item;
-                i.x = x;
-                i.y = y;
-                i.draw(g2d);
+                item.x = x;
+                item.y = y;
+                item.draw(g2d);
                 x += 50;
+                if(item instanceof Collar){
+                    if(item instanceof SilverCollar){
+                        ((SilverCollar) item).x_c = x;
+                        ((SilverCollar) item).y_c = y;
+                        x += 50;
+                    }
+                    if(item instanceof GoldCollar){
+                        ((GoldCollar) item).x_c = x;
+                        ((GoldCollar) item).y_c = y;
+                        x += 50;
+                    }
+                }
             }
         }
         //HEALTH PANEL

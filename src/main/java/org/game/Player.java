@@ -8,6 +8,8 @@ import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
 import org.game.Entity.item.Key;
 import org.game.Entity.item.collar.Collar;
+import org.game.Entity.item.collar.GoldCollar;
+import org.game.Entity.item.collar.SilverCollar;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -31,7 +33,6 @@ public class Player {
     private int y;
 
     public List<Item> inventory;
-    public List<Collar> collar;
 
     public Player(int x, int y) {
         this.x = x;
@@ -82,7 +83,33 @@ public class Player {
                    return true;
                }
             }
-
+            if (item instanceof Food) {
+                if (((Food) item).getBounds().intersects(newBounds)){
+                    System.out.println("I FOUND FOOD");
+                    inventory.add(item);
+                    eat((Food) item);
+                    game.items.remove(item);
+                    return true;
+                }
+            }
+            if (item instanceof SilverCollar) {
+                if (((SilverCollar) item).getBounds().intersects(newBounds)){
+                    System.out.println("I FOUND COLLAR");
+                    inventory.add(item);
+                    wear((SilverCollar) item);
+                    game.items.remove(item);
+                    return true;
+                }
+            }
+            if (item instanceof GoldCollar) {
+                if (((GoldCollar) item).getBounds().intersects(newBounds)){
+                    System.out.println("I FOUND COLLAR");
+                    inventory.add(item);
+                    wear((GoldCollar) item);
+                    game.items.remove(item);
+                    return true;
+                }
+            }
         }
         for (TrashCan trashCan: trashCans) {
             if (trashCan.getBounds().intersects(newBounds)) {
@@ -218,6 +245,9 @@ public class Player {
     }
 
     public void addItemToInventory(Item item) {
+        if(item instanceof Food){
+            eat((Food) item);
+        }
         inventory.add(item);
     }
 

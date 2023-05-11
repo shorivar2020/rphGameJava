@@ -4,10 +4,11 @@ import java.awt.*;
 
 public class Food extends Item {
     int value = 1;
-    int width = 100;
-    int height = 100;
+    int width = 25;
+    int height = 25;
 
     public Food(int x, int y) {
+        this.name = "Food";
         this.x = x;
         this.y = y;
     }
@@ -19,4 +20,8 @@ public class Food extends Item {
     public int getFoodValue(){
         return value;
     }
+    public Rectangle getBounds() {
+        return new Rectangle(x, y, width, height);
+    }
+
 }
