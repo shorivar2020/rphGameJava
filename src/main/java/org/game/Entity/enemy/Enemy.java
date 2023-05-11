@@ -10,10 +10,12 @@ public abstract class Enemy extends Entity {
     int y;
     int health;
     int damage;
-    void attack(Player player){}
     void update(){}
 
     public abstract void takeDamage(int damage);
     public abstract Rectangle getBounds();
     public abstract void draw(Graphics2D g2d);
+    public abstract void attack(Player player);
+    public abstract boolean isAlive();
+    public abstract void move(int x_d, int y_d);
 }

@@ -5,8 +5,8 @@ import org.game.Entity.item.Key;
 import java.awt.*;
 
 public class Exit extends Entity{
-    int width = 100;
-    int height = 100;
+    int width = 50;
+    int height = 50;
 
     public Exit(int x, int y) {
         this.x = x;

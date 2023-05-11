@@ -6,16 +6,16 @@ import org.game.Entity.Obstacle;
 import org.game.Entity.TrashCan;
 import org.game.Entity.enemy.Dog;
 import org.game.Entity.enemy.Enemy;
+import org.game.Entity.enemy.Rat;
 import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
 import org.game.Entity.item.Key;
-import org.game.Entity.item.collar.SilverCollar;
 
 import javax.swing.*;
-import javax.xml.stream.events.EndElement;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,6 +58,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     private boolean showingInventory;
 
+    private int move;
 
     //Sticky Block
 //    private Rectangle obstacle = new Rectangle(500, 300, 100, 50);
@@ -79,38 +80,104 @@ public class Game extends JPanel implements Runnable, KeyListener {
         trashCans = new ArrayList<>();
         items = new ArrayList<>();
         enemies = new ArrayList<>();
+        char[][] map = new char[40][20];
+        try {
+            map = MapLoader.loadMap("src/main/resources/map.txt");
+            // использовать карту для вашей игры
+        } catch (FileNotFoundException e) {
+            System.out.println("Файл не найден: " + e.getMessage());
+        }
+        int x_loc = 0, y_loc = 0;
+        int door_count = 0;
+        int trash_count = 0;
+        for(int i = 0; i < 20; i++){
+            for(int j = 0; j < 40; j++){
+                if (map[j][i] == 1){
+                    obstacles.add(new Obstacle(x_loc,y_loc,30,30));
+                    System.out.print("1");
+                }
+                if(map[j][i] == 2){
+                    List<Item> c = new ArrayList<>();
+                    trashCans.add(new TrashCan(x_loc, y_loc, c));
+                    trash_count++;
+                }
+                if(map[j][i] == 3){
+                    enemies.add(new Dog(x_loc, y_loc));
+                }
+                if(map[j][i] == 4){
+                    enemies.add(new Rat(x_loc, y_loc));
+                }
+                if(map[j][i] == 5){
+                    exit = new Exit(x_loc, y_loc);
+                }
+                if(map[j][i] == 6){
+                    doors.add(new Door(x_loc, y_loc, 90, 25, 0));
+                    door_count++;
+                }
+                if(map[j][i] == 7){
+                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
+                    door_count++;
+                }
+                if(map[j][i] == 8){
+                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
+                    door_count++;
+                }
+                if(map[j][i] == 9){
+                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
+                    door_count++;
+                }
+                if(map[j][i] == 10){
+                    items.add(new Food(x_loc, y_loc));
+                }
+                x_loc += 30;
+            }
 
-        //|
-        obstacles.add(new Obstacle(0, 0, 50, 600));
-        //|
-        obstacles.add(new Obstacle(0, 200, 200, 300));
-        //|
-        obstacles.add(new Obstacle(500, 0, 200, 300));
-        //|
-        obstacles.add(new Obstacle(800, 200, 200, 400));
-        //------------------------------------------     -------------
-        obstacles.add(new Obstacle(0, 0, 700, 25));
-        obstacles.add(new Obstacle(200, 0, 500, 100));
-        obstacles.add(new Obstacle(800, 0, 400, 50));
-
-        //------------------------------------------     --------------
-        obstacles.add(new Obstacle(100, 100, 600, 25));
-        obstacles.add(new Obstacle(800, 100, 400, 25));
-        //-------------------------------------------------------------
-        obstacles.add(new Obstacle(0, 550, 1200, 50));
-        //             ---------------------------
-        obstacles.add(new Obstacle(300, 450, 600, 100));
-
-        doors.add(new Door(700,200, 1));
-        List<Item> content = new ArrayList<>();
-        content.add(new Key(150, 150, 1));
-        content.add(new Food(150, 150));
-        content.add(new SilverCollar());
-        trashCans.add(new TrashCan(150, 150, content));
-        items.add(new Key(300, 150, 2));
-        enemies.add(new Dog(725, 250));
-        exit = new Exit(1050, 200);
-
+            System.out.print("\n");
+            x_loc = 0;
+            y_loc += 30;
+        }
+        if(door_count <= trash_count){
+            for(int i = 0; i < door_count; i++){
+                doors.get(i).setDoorNumber(i);
+                trashCans.get(i).content.add(new Key(doors.get(i).x, doors.get(i).y, i));
+            }
+        }else{
+            System.out.print("TOO MANY TRASHCANS");
+        }
+//        //|
+//        obstacles.add(new Obstacle(0, 0, 50, 600));
+//        //|
+//        obstacles.add(new Obstacle(0, 200, 200, 300));
+//        //|
+//        obstacles.add(new Obstacle(500, 0, 200, 300));
+//        //|
+//        obstacles.add(new Obstacle(800, 200, 200, 400));
+//        //------------------------------------------     -------------
+//        obstacles.add(new Obstacle(0, 0, 700, 25));
+//        obstacles.add(new Obstacle(200, 0, 500, 100));
+//        obstacles.add(new Obstacle(800, 0, 400, 50));
+//
+//        //------------------------------------------     --------------
+//        obstacles.add(new Obstacle(100, 100, 600, 25));
+//        obstacles.add(new Obstacle(800, 100, 400, 25));
+//        //-------------------------------------------------------------
+//        obstacles.add(new Obstacle(0, 550, 1200, 50));
+//        //             ---------------------------
+//        obstacles.add(new Obstacle(300, 450, 600, 100));
+//
+//        doors.add(new Door(700,200, 1));
+//        List<Item> content = new ArrayList<>();
+//        content.add(new Key(150, 150, 1));
+//        content.add(new Food(150, 150));
+//        content.add(new SilverCollar());
+//        trashCans.add(new TrashCan(150, 150, content));
+//        items.add(new Key(300, 150, 2));
+//        enemies.add(new Dog(725, 250));
+//        enemies.add(new Rat(300, 250));
+//        enemies.add(new Rat(350, 250));
+//        enemies.add(new Rat(400, 250));
+//        exit = new Exit(1050, 200);
+//
         //Displays
         loseDisplay = new GameOverView();
         wonDisplay = new GameWonView();
@@ -168,6 +235,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         if (downPressed) {
             player.moveDown(this, obstacles, items, trashCans, doors, enemies, exit);
         }
+
+
     }
 
     public void Win(){
@@ -194,9 +263,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         for (TrashCan trashCan: trashCans){
             trashCan.draw(g2d);
         }
-        for( Item item: items){
-            item.draw(g2d);
-        }
+//        for( Item item: items){
+//            item.draw(g2d);
+//        }
         for (Enemy enemy:enemies){
             enemy.draw(g2d);
         }
@@ -228,6 +297,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
             g2d.fillOval(x_count, 570, 20, 20);
             x_count += 25;
         }
+
+            for(Enemy enemy: enemies){
+                enemy.move(10 , 0);
+            }
+
 
     }
 

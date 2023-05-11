@@ -55,7 +55,7 @@ public class Player {
                         door.unlock((Key) item);
                         System.out.println("UNLOCK");
                         if(!door.locked){
-                            inventory.remove(item);
+//                            inventory.remove(item);
                             System.out.println(inventory + "GO THROW DOOR");
                             return false;
                         }
@@ -109,7 +109,13 @@ public class Player {
     public boolean checkEnemyCollision(Game game, List<Enemy> enemies, Rectangle newBounds){
         for(Enemy enemy: enemies){
             if ((enemy).getBounds().intersects(newBounds)){
-                System.out.println("ENEMY");
+                enemy.attack(this);
+                if(!enemy.isAlive()){
+                    game.enemies.remove(enemy);
+                }
+                if(health < 1){
+                    game.Lose();
+                }
                 return true;
             }
         }
@@ -220,8 +226,9 @@ public class Player {
         g2d.fillOval(300, 0, 25, 25);
     }
 
-    public void takeDamage(int damage){
+    public void takeDamage(int damage, Enemy enemy){
         health = health - damage;
+        attackEnemy(enemy);
     }
 
     public void attackEnemy(Enemy enemy){

@@ -9,6 +9,8 @@ public class Dog extends Enemy {
     int damage = 3;
     int width = 50;
     int height = 50;
+    int move = 0;
+    int speed = 0;
     public Dog(int x, int y){
         this.x = x;
         this.y = y;
@@ -19,15 +21,27 @@ public class Dog extends Enemy {
         g2d.fillRect(x, y, width, height);
     }
 
-    public void move() {
-        // Двигать монстра по экрану
+    public void move(int x_d, int y_d) {
+            if(speed % 10 == 0){
+                if(move%2==0){
+                    x += x_d;
+                    y += y_d;
+                }else{
+                    x -= x_d;
+                    y -= y_d;
+                }
+                move++;
+            }
+            speed++;
     }
 
     public void attack(Player player) {
-        player.takeDamage(damage);
+        System.out.println("DOG ATTACK YOU");
+        player.takeDamage(damage, this);
     }
 
     public void takeDamage(int damage){
+        System.out.println("YOU ATTACH DOG");
         health = health - damage;
     }
 
@@ -38,4 +52,5 @@ public class Dog extends Enemy {
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
+
 }
