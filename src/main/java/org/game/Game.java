@@ -18,7 +18,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -74,8 +74,29 @@ public class Game extends JPanel implements Runnable, KeyListener {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         addKeyListener(this);
+        ArrayList<Item> load_inv = new ArrayList<>();
+        try {
+            FileInputStream fileIn = new FileInputStream("items.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            load_inv = (ArrayList<Item>) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Список объектов загружен из файла:");
+            if(load_inv!= null){
+                for (Item item : load_inv) {
+                    System.out.println(item.x + " " + item.y + " " + item.name);
+                }
+            }
 
-        player = new Player(WIDTH / 2, HEIGHT / 2);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        player = new Player(WIDTH / 2, HEIGHT / 2, load_inv);
+
+        System.out.print("AAAA" + player.inventory);
 
         //Objects on Map
         obstacles = new ArrayList<>();
@@ -181,6 +202,8 @@ public class Game extends JPanel implements Runnable, KeyListener {
         //Displays
         loseDisplay = new GameOverView();
         wonDisplay = new GameWonView();
+
+
     }
 
     public synchronized void start() {
@@ -240,11 +263,34 @@ public class Game extends JPanel implements Runnable, KeyListener {
     }
 
     public void Win(){
+        System.out.print("WINNER");
         gameFinishWin = true;
+        List<Item> it = new ArrayList<>();
+        it.add(new SilverCollar(0, 0));
+        try {
+            FileOutputStream fileOut = new FileOutputStream("items.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(it);
+            out.close();
+            fileOut.close();
+            System.out.println("Список объектов сохранен в файл");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void Lose(){
         gameFinishLose = true;
+        try {
+            FileOutputStream fileOut = new FileOutputStream("items.txt");
+            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+            out.writeObject(player.inventory);
+            out.close();
+            fileOut.close();
+            System.out.println("Список объектов сохранен в файл");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -272,13 +318,15 @@ public class Game extends JPanel implements Runnable, KeyListener {
         exit.draw(g2d);
         if(gameFinishWin){
             wonDisplay.draw(g2d);
+            stop();
         }
         if(gameFinishLose){
             loseDisplay.draw(g2d);
+            stop();
         }
         if (showingInventory) {
             List<Item> inventoryItems = player.inventory;
-            int x = 10;
+            int x = 50;
             int y = 50;
             for (Item item : inventoryItems) {
                 item.x = x;

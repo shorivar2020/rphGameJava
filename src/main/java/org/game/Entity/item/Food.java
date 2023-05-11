@@ -1,8 +1,9 @@
 package org.game.Entity.item;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Food extends Item {
+public class Food extends Item implements Serializable {
     int value = 1;
     int width = 25;
     int height = 25;

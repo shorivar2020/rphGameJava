@@ -2,8 +2,9 @@ package org.game.Entity.item;
 import org.game.Player;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class Key extends Item {
+public class Key extends Item implements Serializable {
 
     int doorNumber;
     int width = 40;

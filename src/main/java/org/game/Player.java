@@ -32,14 +32,16 @@ public class Player {
     private int x;
     private int y;
 
-    public List<Item> inventory;
+    public List<Item> inventory = new ArrayList<>();
 
-    public Player(int x, int y) {
+    public Player(int x, int y, List<Item> items) {
         this.x = x;
         this.y = y;
-        inventory = new ArrayList<>();
         health = START_HEALTH;
         damage = START_DAMAGE;
+        if(items!= null){
+            inventory = items;
+        }
     }
 
 

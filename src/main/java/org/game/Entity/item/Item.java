@@ -4,8 +4,9 @@ import org.game.Entity.Entity;
 import org.game.Player;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public abstract class Item extends Entity {
+public abstract class Item extends Entity implements Serializable {
     public boolean taken = false;
     public String name;
     void use(Player player){}
