@@ -11,7 +11,9 @@ import org.game.Entity.item.collar.Collar;
 import org.game.Entity.item.collar.GoldCollar;
 import org.game.Entity.item.collar.SilverCollar;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -20,7 +22,7 @@ import java.util.Random;
  * The player class is controlled through the keyboards by the user.
  * Moves around the map. Interacts with objects.
  */
-public class Player {
+public class Player implements Serializable {
 
     public int health;
     private int damage;
@@ -31,8 +33,10 @@ public class Player {
 
     private int x;
     private int y;
+    int move_count = 0;
 
     public List<Item> inventory = new ArrayList<>();
+    ImageIcon image;
 
     public Player(int x, int y, List<Item> items) {
         this.x = x;
@@ -42,6 +46,7 @@ public class Player {
         if(items!= null){
             inventory = items;
         }
+        setImage(this);
     }
 
 
@@ -56,10 +61,10 @@ public class Player {
                 for (Item item: inventory){
                     if (item instanceof Key) {
                         door.unlock((Key) item);
-                        System.out.println("UNLOCK");
+//                        System.out.println("UNLOCK");
                         if(!door.locked){
 //                            inventory.remove(item);
-                            System.out.println(inventory + "GO THROW DOOR");
+//                            System.out.println(inventory + "GO THROW DOOR");
                             return false;
                         }
                     }
@@ -79,7 +84,7 @@ public class Player {
         for (Item item: items) {
             if (item instanceof Key) {
                if (((Key) item).getBounds().intersects(newBounds)){
-                   System.out.println("I FOUND KEY");
+//                   System.out.println("I FOUND KEY");
                    inventory.add(item);
                    game.items.remove(item);
                    return true;
@@ -87,7 +92,7 @@ public class Player {
             }
             if (item instanceof Food) {
                 if (((Food) item).getBounds().intersects(newBounds)){
-                    System.out.println("I FOUND FOOD");
+//                    System.out.println("I FOUND FOOD");
                     inventory.add(item);
                     eat((Food) item);
                     game.items.remove(item);
@@ -96,7 +101,7 @@ public class Player {
             }
             if (item instanceof SilverCollar) {
                 if (((SilverCollar) item).getBounds().intersects(newBounds)){
-                    System.out.println("I FOUND COLLAR");
+//                    System.out.println("I FOUND COLLAR");
                     inventory.add(item);
                     wear((SilverCollar) item);
                     game.items.remove(item);
@@ -105,7 +110,7 @@ public class Player {
             }
             if (item instanceof GoldCollar) {
                 if (((GoldCollar) item).getBounds().intersects(newBounds)){
-                    System.out.println("I FOUND COLLAR");
+//                    System.out.println("I FOUND COLLAR");
                     inventory.add(item);
                     wear((GoldCollar) item);
                     game.items.remove(item);
@@ -115,7 +120,7 @@ public class Player {
         }
         for (TrashCan trashCan: trashCans) {
             if (trashCan.getBounds().intersects(newBounds)) {
-                System.out.println("FIND IN TRASH");
+//                System.out.println("FIND IN TRASH");
                 for(Item item: trashCan.content){
                     inventory.add(item);
                     if(item instanceof Collar){
@@ -124,9 +129,9 @@ public class Player {
                     if(item instanceof Food){
                         eat((Food) item);
                     }
-                    System.out.println("I found NEW ITEM");
+//                    System.out.println("I found NEW ITEM");
                 }
-                System.out.println(inventory);
+//                System.out.println(inventory);
                 trashCan.content.removeAll(inventory);
                 return true;
             }
@@ -152,12 +157,13 @@ public class Player {
     }
 
     public void moveLeft(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+        setImageL(this);
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-            System.out.println("CHECK COLLISION");
+//            System.out.println("CHECK COLLISION");
         }
         if(checkEnemyCollision(game, enemies, newBounds)){
-            System.out.println("CHECK ENEMY");
+//            System.out.println("CHECK ENEMY");
         }
         else if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             x -= SPEED;
@@ -167,12 +173,13 @@ public class Player {
     }
 
     public void moveRight(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+        setImage(this);
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-            System.out.println("CHECK COLLISION");
+//            System.out.println("CHECK COLLISION");
         }
         if(checkEnemyCollision(game, enemies, newBounds)){
-            System.out.println("CHECK ENEMY");
+//            System.out.println("CHECK ENEMY");
         }
         if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             x += SPEED;
@@ -183,12 +190,13 @@ public class Player {
     }
 
     public void moveUp(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+        setImageB(this);
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-            System.out.println("CHECK COLLISION");
+//            System.out.println("CHECK COLLISION");
         }
         if(checkEnemyCollision(game, enemies, newBounds)){
-            System.out.println("CHECK ENEMY");
+//            System.out.println("CHECK ENEMY");
         }
         if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             y -= SPEED;
@@ -199,12 +207,13 @@ public class Player {
     }
 
     public void moveDown(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+        setImageA(this);
         Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-            System.out.println("CHECK COLLISION");
+//            System.out.println("CHECK COLLISION");
         }
         if(checkEnemyCollision(game, enemies, newBounds)){
-            System.out.println("CHECK ENEMY");
+//            System.out.println("CHECK ENEMY");
         }
         if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
             y += SPEED;
@@ -218,9 +227,32 @@ public class Player {
         return new Rectangle(x, y, SIZE, SIZE);
     }
 
+    public void setImage(Player e){
+        if(move_count % 2 == 0){
+            e.image = new ImageIcon(getClass().getResource("/cat1.png"));
+
+        }else{
+            e.image = new ImageIcon(getClass().getResource("/cat2.png"));
+
+        }
+        move_count++;
+    }
+    public void setImageA(Player e){
+        e.image = new ImageIcon(getClass().getResource("/cat_a1.png"));
+    }
+    public void setImageB(Player e){
+        e.image = new ImageIcon(getClass().getResource("/cat_b.png"));
+    }
+    public void setImageL(Player e){
+        if(move_count % 2 == 1){
+            e.image = new ImageIcon(getClass().getResource("/cat1l.png"));
+        }else{
+            e.image = new ImageIcon(getClass().getResource("/cat2l.png"));
+        }
+        move_count++;
+    }
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.RED);
-        g2d.fill(getBounds());
+        g2d.drawImage(image.getImage(), x, y, null);
     }
 
     public boolean collidesWith(Rectangle rect) {
@@ -236,13 +268,13 @@ public class Player {
     }
 
     void wear(Collar collar){
-        System.out.println("WEAR COLLAR");
+//        System.out.println("WEAR COLLAR");
         health += collar.getHealth();
         damage += collar.getDamage();
     }
 
     void eat (Food food){
-        System.out.println("EAT FOD AM-AM-AM");
+//        System.out.println("EAT FOD AM-AM-AM");
         health += food.getFoodValue();
     }
 
@@ -251,11 +283,6 @@ public class Player {
             eat((Food) item);
         }
         inventory.add(item);
-    }
-
-    public void drawHealth(Graphics2D g2d){
-        g2d.setColor(Color.RED);
-        g2d.fillOval(300, 0, 25, 25);
     }
 
     public void takeDamage(int damage, Enemy enemy){

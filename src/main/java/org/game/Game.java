@@ -1,23 +1,23 @@
 package org.game;
 
-import org.game.Entity.Door;
-import org.game.Entity.Exit;
-import org.game.Entity.Obstacle;
-import org.game.Entity.TrashCan;
+import org.game.Entity.*;
 import org.game.Entity.enemy.Dog;
 import org.game.Entity.enemy.Enemy;
 import org.game.Entity.enemy.Rat;
 import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
 import org.game.Entity.item.Key;
+import org.game.Entity.item.collar.BasicCollar;
 import org.game.Entity.item.collar.Collar;
 import org.game.Entity.item.collar.GoldCollar;
 import org.game.Entity.item.collar.SilverCollar;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ import java.util.List;
 /**
  * The main class of game management
  */
-public class Game extends JPanel implements Runnable, KeyListener {
+public class Game extends JPanel implements Runnable, KeyListener, Serializable {
 
     //Display size
     private static final int WIDTH = 1200;
@@ -38,6 +38,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
 
     //Objects of Map
+    private List<Background> backgrounds;
     private List<Obstacle> obstacles;
     private List<Door> doors;
     private List<TrashCan> trashCans;
@@ -83,9 +84,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
             fileIn.close();
             System.out.println("Список объектов загружен из файла:");
             if(load_inv!= null){
-                for (Item item : load_inv) {
-                    System.out.println(item.x + " " + item.y + " " + item.name);
-                }
+//                for (Item item : load_inv) {
+//                    System.out.println(item.x + " " + item.y + " " + item.name);
+//                }
             }
 
 
@@ -96,9 +97,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
         player = new Player(WIDTH / 2, HEIGHT / 2, load_inv);
 
-        System.out.print("AAAA" + player.inventory);
+//        System.out.print("AAAA" + player.inventory);
 
         //Objects on Map
+        backgrounds = new ArrayList<>();
         obstacles = new ArrayList<>();
         doors = new ArrayList<>();
         trashCans = new ArrayList<>();
@@ -115,45 +117,65 @@ public class Game extends JPanel implements Runnable, KeyListener {
         int trash_count = 0;
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 40; j++){
+                if (map[j][i] == 0){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                }
+                if (map[j][i] == 'g'){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false));
+                }
+                if (map[j][i] == 'f'){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false));
+                }
                 if (map[j][i] == 1){
-                    obstacles.add(new Obstacle(x_loc,y_loc,30,30));
-                    System.out.print("1");
+                    obstacles.add(new Obstacle(x_loc,y_loc,30,30, true, false));
+                }
+                if (map[j][i] == 'w'){
+                    obstacles.add(new Obstacle(x_loc,y_loc,30,30, false, true));
                 }
                 if(map[j][i] == 2){
                     List<Item> c = new ArrayList<>();
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false));
                     trashCans.add(new TrashCan(x_loc, y_loc, c));
                     trash_count++;
                 }
                 if(map[j][i] == 3){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
                     enemies.add(new Dog(x_loc, y_loc));
                 }
                 if(map[j][i] == 4){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
                     enemies.add(new Rat(x_loc, y_loc));
                 }
                 if(map[j][i] == 5){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false));
                     exit = new Exit(x_loc, y_loc);
                 }
                 if(map[j][i] == 6){
-                    doors.add(new Door(x_loc, y_loc, 90, 25, 0));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    doors.add(new Door(x_loc, y_loc, 0, false));
                     door_count++;
                 }
                 if(map[j][i] == 7){
-                    doors.add(new Door(x_loc, y_loc, 25, 90, 0));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    doors.add(new Door(x_loc, y_loc, 0, true));
                     door_count++;
                 }
                 if(map[j][i] == 8){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
                     items.add(new SilverCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 9){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
                     items.add(new GoldCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 10){
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, true));
+
                     items.add(new Food(x_loc, y_loc));
                 }
                 x_loc += 30;
             }
 
-            System.out.print("\n");
             x_loc = 0;
             y_loc += 30;
         }
@@ -165,45 +187,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }else{
             System.out.print("TOO MANY TRASHCANS");
         }
-//        //|
-//        obstacles.add(new Obstacle(0, 0, 50, 600));
-//        //|
-//        obstacles.add(new Obstacle(0, 200, 200, 300));
-//        //|
-//        obstacles.add(new Obstacle(500, 0, 200, 300));
-//        //|
-//        obstacles.add(new Obstacle(800, 200, 200, 400));
-//        //------------------------------------------     -------------
-//        obstacles.add(new Obstacle(0, 0, 700, 25));
-//        obstacles.add(new Obstacle(200, 0, 500, 100));
-//        obstacles.add(new Obstacle(800, 0, 400, 50));
-//
-//        //------------------------------------------     --------------
-//        obstacles.add(new Obstacle(100, 100, 600, 25));
-//        obstacles.add(new Obstacle(800, 100, 400, 25));
-//        //-------------------------------------------------------------
-//        obstacles.add(new Obstacle(0, 550, 1200, 50));
-//        //             ---------------------------
-//        obstacles.add(new Obstacle(300, 450, 600, 100));
-//
-//        doors.add(new Door(700,200, 1));
-//        List<Item> content = new ArrayList<>();
-//        content.add(new Key(150, 150, 1));
-//        content.add(new Food(150, 150));
-//        content.add(new SilverCollar());
-//        trashCans.add(new TrashCan(150, 150, content));
-//        items.add(new Key(300, 150, 2));
-//        enemies.add(new Dog(725, 250));
-//        enemies.add(new Rat(300, 250));
-//        enemies.add(new Rat(350, 250));
-//        enemies.add(new Rat(400, 250));
-//        exit = new Exit(1050, 200);
-//
         //Displays
         loseDisplay = new GameOverView();
         wonDisplay = new GameWonView();
-
-
     }
 
     public synchronized void start() {
@@ -265,12 +251,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
     public void Win(){
         System.out.print("WINNER");
         gameFinishWin = true;
-        List<Item> it = new ArrayList<>();
-        it.add(new SilverCollar(0, 0));
+        List<Item> itList = new ArrayList<>();
+        itList.add(new BasicCollar(0, 0));
         try {
             FileOutputStream fileOut = new FileOutputStream("items.txt");
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(it);
+            out.writeObject(itList);
             out.close();
             fileOut.close();
             System.out.println("Список объектов сохранен в файл");
@@ -298,7 +284,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-
+        for (Background background: backgrounds){
+            background.draw(g2d);
+        }
+        for (TrashCan trashCan: trashCans){
+            trashCan.draw(g2d);
+        }
         player.draw(g2d);
         for (Obstacle obstacle : obstacles) {
             obstacle.draw(g2d);
@@ -306,9 +297,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
         for (Door door:doors){
             door.draw(g2d);
         }
-        for (TrashCan trashCan: trashCans){
-            trashCan.draw(g2d);
-        }
+
         for( Item item: items){
             item.draw(g2d);
         }
@@ -316,14 +305,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
             enemy.draw(g2d);
         }
         exit.draw(g2d);
-        if(gameFinishWin){
-            wonDisplay.draw(g2d);
-            stop();
-        }
-        if(gameFinishLose){
-            loseDisplay.draw(g2d);
-            stop();
-        }
+
         if (showingInventory) {
             List<Item> inventoryItems = player.inventory;
             int x = 50;
@@ -332,18 +314,17 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 item.x = x;
                 item.y = y;
                 item.draw(g2d);
-                x += 50;
+                x += 30;
                 if(item instanceof Collar){
                     if(item instanceof SilverCollar){
                         ((SilverCollar) item).x_c = x;
                         ((SilverCollar) item).y_c = y;
-                        x += 50;
                     }
                     if(item instanceof GoldCollar){
                         ((GoldCollar) item).x_c = x;
                         ((GoldCollar) item).y_c = y;
-                        x += 50;
                     }
+                    x += 30;
                 }
             }
         }
@@ -351,16 +332,29 @@ public class Game extends JPanel implements Runnable, KeyListener {
         int x_count = 20;
         g2d.setColor(Color.BLACK);
         g2d.fillRect(0, 550, 400, 50);
+        BufferedImage imageHeart;
+        try {
+            imageHeart = ImageIO.read(getClass().getResourceAsStream("/heart.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         for(int i = 0; i < player.health; i++){
-            g2d.setColor(Color.RED);
-            g2d.fillOval(x_count, 570, 20, 20);
+            g2d.drawImage(imageHeart, x_count, 570, null);
             x_count += 25;
         }
 
             for(Enemy enemy: enemies){
                 enemy.move(10 , 0);
             }
-
+        if(gameFinishWin){
+            wonDisplay.draw(g2d);
+            stop();
+        }
+        if(gameFinishLose){
+            loseDisplay.draw(g2d);
+            stop();
+        }
 
     }
 

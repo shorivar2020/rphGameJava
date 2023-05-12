@@ -12,7 +12,7 @@ public class MapLoader {
         int row = 0;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            System.out.println(line.length());
+//            System.out.println(line.length());
             for (int col = 0; col < line.length(); col++) {
                 char c = line.charAt(col);
                 if (c == '0') {
@@ -37,6 +37,12 @@ public class MapLoader {
                     map[col][row] = 9;
                 }else if (c == '+') { //food
                     map[col][row] = 10;
+                }else if (c == 'g') { //grass
+                    map[col][row] = 'g';
+                }else if (c == 'f') { //floor
+                    map[col][row] = 'f';
+                }else if (c == 'w') { //floor
+                    map[col][row] = 'w';
                 }
             }
             row++;
