@@ -118,13 +118,13 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         for(int i = 0; i < 20; i++){
             for(int j = 0; j < 40; j++){
                 if (map[j][i] == 0){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
                 }
                 if (map[j][i] == 'g'){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false, false));
                 }
                 if (map[j][i] == 'f'){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
                 }
                 if (map[j][i] == 1){
                     obstacles.add(new Obstacle(x_loc,y_loc,30,30, true, false));
@@ -134,42 +134,45 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
                 }
                 if(map[j][i] == 2){
                     List<Item> c = new ArrayList<>();
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false, false));
                     trashCans.add(new TrashCan(x_loc, y_loc, c));
                     trash_count++;
                 }
                 if(map[j][i] == 3){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
                     enemies.add(new Dog(x_loc, y_loc));
                 }
                 if(map[j][i] == 4){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
                     enemies.add(new Rat(x_loc, y_loc));
                 }
                 if(map[j][i] == 5){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
                     exit = new Exit(x_loc, y_loc);
                 }
                 if(map[j][i] == 6){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
                     doors.add(new Door(x_loc, y_loc, 0, false));
                     door_count++;
                 }
                 if(map[j][i] == 7){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
                     doors.add(new Door(x_loc, y_loc, 0, true));
                     door_count++;
                 }
                 if(map[j][i] == 8){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, false, true));
                     items.add(new SilverCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 9){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
+
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, false, true));
                     items.add(new GoldCollar(x_loc, y_loc));
                 }
                 if(map[j][i] == 10){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, true));
+                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, true, false));
 
                     items.add(new Food(x_loc, y_loc));
                 }
@@ -306,10 +309,18 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         }
         exit.draw(g2d);
 
+        BufferedImage imageInv;
+        try {
+            imageInv = ImageIO.read(getClass().getResourceAsStream("/inv_bar.png"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         if (showingInventory) {
+            g2d.drawImage(imageInv, 0, 0, null);
             List<Item> inventoryItems = player.inventory;
-            int x = 50;
-            int y = 50;
+            int x = 10;
+            int y = 10;
             for (Item item : inventoryItems) {
                 item.x = x;
                 item.y = y;
@@ -330,15 +341,18 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         }
         //HEALTH PANEL
         int x_count = 20;
-        g2d.setColor(Color.BLACK);
-        g2d.fillRect(0, 550, 400, 50);
+//        g2d.setColor(Color.BLACK);
+//        g2d.fillRect(0, 550, 400, 50);
         BufferedImage imageHeart;
+        BufferedImage imageBar;
         try {
             imageHeart = ImageIO.read(getClass().getResourceAsStream("/heart.png"));
+            imageBar = ImageIO.read(getClass().getResourceAsStream("/health_bar.png"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
+        g2d.drawImage(imageBar, 0, 565, null);
         for(int i = 0; i < player.health; i++){
             g2d.drawImage(imageHeart, x_count, 570, null);
             x_count += 25;

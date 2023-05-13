@@ -1,7 +1,9 @@
 package org.game;
 
 import org.game.Entity.Entity;
+import org.game.Entity.item.Key;
 
+import javax.swing.*;
 import java.awt.*;
 
 /**
@@ -10,14 +12,16 @@ import java.awt.*;
 public class GameOverView{
     private int x = 0;
     private int y = 0;
-    private int width = 1200;
-    private int height = 600;
-    public GameOverView(){
 
+    ImageIcon image;
+    public GameOverView(){
+        setImage(this);
+    }
+
+    public void setImage(GameOverView t){
+        t.image = new ImageIcon(getClass().getResource("/game_over.png"));
     }
     public void draw(Graphics2D g2d) {
-        g2d.setColor(Color.DARK_GRAY);
-        g2d.fillRect(x, y, width, height);
-        g2d.drawString("You lose", 0, 0);
+        g2d.drawImage(image.getImage(), x, y, null);
     }
 }

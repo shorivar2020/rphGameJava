@@ -7,7 +7,7 @@ import java.io.IOException;
 
 public class Background extends Entity{
     ImageIcon image;
-    public Background(int x, int y, int width, int height, boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate) {
+    public Background(int x, int y, int width, int height, boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate, boolean isCushion) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -20,6 +20,8 @@ public class Background extends Entity{
             setImageFloor(this);
         }else if(isPlate){
             setImagePlate(this);
+        }else  if(isCushion){
+            setImageCushion(this);
         }
     }
 
@@ -37,6 +39,10 @@ public class Background extends Entity{
 
     public void setImagePlate(Background o){
         o.image = new ImageIcon(getClass().getResource("/plate.png"));
+    }
+
+    public void setImageCushion(Background o){
+        o.image = new ImageIcon(getClass().getResource("/cushion.png"));
     }
 
     public void draw(Graphics2D g2d) {
