@@ -1,13 +1,8 @@
 package org.game.Entity.item.collar;
 
-
-import org.game.Entity.item.Key;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.util.Objects;
 
 public class GoldCollar extends Collar {
     public int x_c;
@@ -23,7 +18,7 @@ public class GoldCollar extends Collar {
     }
 
     public void setImage(GoldCollar t){
-        t.image = new ImageIcon(getClass().getResource("/goldcollar.png"));
+        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/gold_collar.png")));
     }
 
     @Override

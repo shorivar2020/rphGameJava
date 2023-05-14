@@ -121,7 +121,7 @@ public class Player implements Serializable {
         return false;
     }
 
-    public boolean checkItemCollision(Game game, List<Item> items, List<TrashCan> trashCans, List<Enemy> enemies) {
+    public void checkItemCollision(Game game, List<Item> items, List<TrashCan> trashCans, List<Enemy> enemies) {
         newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         for (Item item: items) {
             if (item instanceof Key) {
@@ -129,7 +129,7 @@ public class Player implements Serializable {
 //                   System.out.println("I FOUND KEY");
                     inventory.add(item);
                     game.items.remove(item);
-                    return true;
+                    return;
                 }
             }
             if (item instanceof Food) {
@@ -138,16 +138,16 @@ public class Player implements Serializable {
                     inventory.add(item);
                     eat((Food) item);
                     game.items.remove(item);
-                    return true;
+                    return;
                 }
             }
             if (item instanceof SilverCollar) {
                 if (((SilverCollar) item).getBounds().intersects(newBounds)){
-//                    System.out.println("I FOUND COLLAR");
+                    System.out.println("I FOUND COLLAR");
                     inventory.add(item);
                     wear((SilverCollar) item);
                     game.items.remove(item);
-                    return true;
+                    return;
                 }
             }
             if (item instanceof GoldCollar) {
@@ -156,7 +156,7 @@ public class Player implements Serializable {
                     inventory.add(item);
                     wear((GoldCollar) item);
                     game.items.remove(item);
-                    return true;
+                    return;
                 }
             }
         }
@@ -175,7 +175,7 @@ public class Player implements Serializable {
                 }
 //                System.out.println(inventory);
                 trashCan.content.removeAll(inventory);
-                return true;
+                return;
             }
         }
         for(Enemy enemy: enemies){
@@ -187,11 +187,10 @@ public class Player implements Serializable {
                 if(health < 1){
                     game.Lose();
                 }
-                return true;
+                return;
             }
         }
 
-        return false;
     }
 
 

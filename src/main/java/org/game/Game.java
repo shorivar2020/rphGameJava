@@ -17,8 +17,8 @@ import java.util.List;
  * The main class of game management
  */
 public class Game extends JPanel implements Runnable, KeyListener, Serializable {
-    private static final int FPS = 60;
-    private static final int DELAY = 1000 / FPS;
+    private static final int FPS = 30;
+    private static final int DELAY = 1 / FPS;
     private static final int SLEEP_TIME = 10;
     private static final int MOVEMENT_RANGE_X = 60;
     private static final int MOVEMENT_RANGE_Y = 0;
@@ -108,7 +108,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     @Override
     public void run() {
         while (running) {
-//            Timer timer = new Timer(DELAY, (e) -> {
+//            Timer timer = new Timer(1, (e) -> {
                 update();
                 repaint();
 //            });

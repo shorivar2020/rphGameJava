@@ -1,13 +1,9 @@
 package org.game.Entity.item;
-import org.game.Entity.TrashCan;
-import org.game.Player;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
 import java.io.Serializable;
+import java.util.Objects;
 
 public class Key extends Item implements Serializable {
 
@@ -24,7 +20,7 @@ public class Key extends Item implements Serializable {
     }
 
     public void setImage(Key t){
-        t.image = new ImageIcon(getClass().getResource("/key.png"));
+        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/key.png")));
     }
 
 
@@ -37,9 +33,6 @@ public class Key extends Item implements Serializable {
     }
 
     public boolean isRightDoor(int doorNumber){
-        if(this.doorNumber == doorNumber){
-            return true;
-        }
-        return false;
+        return this.doorNumber == doorNumber;
     }
 }

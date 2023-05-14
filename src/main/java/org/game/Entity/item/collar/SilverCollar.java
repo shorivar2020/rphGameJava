@@ -1,10 +1,8 @@
 package org.game.Entity.item.collar;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.util.Objects;
 
 public class SilverCollar extends Collar {
     public int x_c;
@@ -20,7 +18,7 @@ public class SilverCollar extends Collar {
     }
 
     public void setImage(SilverCollar t){
-        t.image = new ImageIcon(getClass().getResource("/silvercollar.png"));
+        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/silver_collar.png")));
     }
     @Override
     public void draw(Graphics2D g2d) {

@@ -1,10 +1,8 @@
 package org.game.Entity;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.util.Objects;
 
 public class Obstacle extends Entity{
     ImageIcon image;
@@ -21,16 +19,14 @@ public class Obstacle extends Entity{
     }
 
     public void setImageBuilding(Obstacle o){
-        o.image = new ImageIcon(getClass().getResource("/brics.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/bricks.png")));
     }
 
     public void setImageWater(Obstacle o){
-        o.image = new ImageIcon(getClass().getResource("/water.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/water.png")));
     }
 
     public void draw(Graphics2D g2d) {
-//        g2d.setColor(Color.lightGray);
-//        g2d.fillRect(x, y, width, height);
         g2d.drawImage(image.getImage(), x, y, null);
     }
 

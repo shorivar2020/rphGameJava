@@ -4,6 +4,7 @@ import org.game.Player;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class Rat extends Enemy {
     int health = 1;
@@ -13,6 +14,8 @@ public class Rat extends Enemy {
     int move = 0;
     int speed = 0;
     ImageIcon image;
+    boolean rightDirection;
+    int i;
 
     public Rat(int x, int y){
         this.x = x;
@@ -21,12 +24,12 @@ public class Rat extends Enemy {
     }
 
     public void setImage(Rat e){
-            e.image = new ImageIcon(getClass().getResource("/rat.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/rat.png")));
     }
 
     public void setImageLeft(Rat e){
 
-            e.image = new ImageIcon(getClass().getResource("/ratl.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/ratl.png")));
 
 
     }
@@ -36,15 +39,24 @@ public class Rat extends Enemy {
 
     public void move(int x_d, int y_d) {
         if(speed % 10 == 0){
-            if(move%2==0){
-                setImage(this);
-                x += x_d;
-                y += y_d;
-            }else{
+            if(!rightDirection){
+                i++;
                 setImageLeft(this);
-                x -= x_d;
-                y -= y_d;
+                x += 5;
+                if(i == 10){
+                    rightDirection = true;
+                    i = 0;
+                }
+            }else {
+                i++;
+                setImage(this);
+                x -= 5;
+                if(i == 10){
+                    rightDirection = false;
+                    i = 0;
+                }
             }
+
             move++;
         }
         speed++;

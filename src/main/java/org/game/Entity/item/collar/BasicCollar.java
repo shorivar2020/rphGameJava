@@ -1,9 +1,8 @@
 package org.game.Entity.item.collar;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.util.Objects;
 
 public class BasicCollar extends Collar {
     public int x_c;
@@ -19,7 +18,7 @@ public class BasicCollar extends Collar {
     }
 
     public void setImage(BasicCollar t){
-        t.image = new ImageIcon(getClass().getResource("/basiccollar.png"));
+        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/basic_collar.png")));
     }
     @Override
     public void draw(Graphics2D g2d) {

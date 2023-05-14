@@ -6,11 +6,9 @@ import org.game.Player;
 import java.awt.*;
 
 public abstract class Enemy extends Entity {
-    int x;
-    int y;
     int health;
     int damage;
-    void update(){}
+
 
     public abstract void takeDamage(int damage);
     public abstract Rectangle getBounds();
