@@ -13,9 +13,13 @@ import org.game.Entity.item.collar.SilverCollar;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -28,48 +32,85 @@ public class Player implements Serializable {
     private int damage;
     private static final int START_HEALTH = 9;
     private static final int START_DAMAGE = 5;
-    private static final int SIZE = 50;
-    private static final int SPEED = 5;
+    public static final int SIZE = 50;
+    public static final int SPEED = 5;
 
     private int x;
     private int y;
     int move_count = 0;
 
-    public List<Item> inventory = new ArrayList<>();
-    ImageIcon image;
+    private boolean leftCollision;
+    private boolean rightCollision;
+    private boolean upCollision;
+    private boolean downCollision;
+    private boolean doorCollision;
 
-    public Player(int x, int y, List<Item> items) {
+    public List<Item> inventory;
+    ImageIcon image;
+    Rectangle newBounds;
+
+
+    public Player(int x, int y) {
         this.x = x;
         this.y = y;
         health = START_HEALTH;
         damage = START_DAMAGE;
-        if(items!= null){
-            inventory = items;
-        }
+        inventory = takeStartInventory();
         setImage(this);
     }
 
 
     private boolean checkObstacleCollision(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit, Rectangle newBounds) {
+        leftCollision = false;
+        rightCollision = false;
+        upCollision = false;
+        downCollision =false;
+        doorCollision = false;
         for (Obstacle obstacle : obstacles) {
             if (obstacle.getBounds().intersects(newBounds)) {
+                Rectangle intersection = obstacle.getBounds().intersection(newBounds);
+
+                double width = intersection.getWidth();
+                double height = intersection.getHeight();
+
+                double dx = (newBounds.getCenterX() - obstacle.getBounds().getCenterX()) / width;
+                double dy = (newBounds.getCenterY() - obstacle.getBounds().getCenterY()) / height;
+
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    if (dx < 0) {
+                       System.out.println("Right collision");
+                       rightCollision = true;
+                    } else {
+                        System.out.println("Left collision");
+                        leftCollision = true;
+                    }
+                } else {
+                    if (dy < 0) {
+                        System.out.println("Down collision");
+                        downCollision = true;
+                    } else {
+                        System.out.println("UP collision");
+                        upCollision = true;
+                    }
+                }
+
                 return true;
             }
         }
+
         for (Door door: doors) {
             if (door.getBounds().intersects(newBounds)) {
                 for (Item item: inventory){
                     if (item instanceof Key) {
                         door.unlock((Key) item);
-//                        System.out.println("UNLOCK");
                         if(!door.locked){
 //                            inventory.remove(item);
-//                            System.out.println(inventory + "GO THROW DOOR");
                             return false;
                         }
                     }
                 }
                 if(door.locked){
+                    doorCollision = true;
                     return true;
                 }
             }
@@ -80,15 +121,16 @@ public class Player implements Serializable {
         return false;
     }
 
-    private boolean checkItemCollision(Game game, List<Item> items, List<TrashCan> trashCans, List<Door> doors, Rectangle newBounds) {
+    public boolean checkItemCollision(Game game, List<Item> items, List<TrashCan> trashCans, List<Enemy> enemies) {
+        newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
         for (Item item: items) {
             if (item instanceof Key) {
-               if (((Key) item).getBounds().intersects(newBounds)){
+                if (((Key) item).getBounds().intersects(newBounds)){
 //                   System.out.println("I FOUND KEY");
-                   inventory.add(item);
-                   game.items.remove(item);
-                   return true;
-               }
+                    inventory.add(item);
+                    game.items.remove(item);
+                    return true;
+                }
             }
             if (item instanceof Food) {
                 if (((Food) item).getBounds().intersects(newBounds)){
@@ -136,11 +178,6 @@ public class Player implements Serializable {
                 return true;
             }
         }
-
-        return false;
-    }
-
-    public boolean checkEnemyCollision(Game game, List<Enemy> enemies, Rectangle newBounds){
         for(Enemy enemy: enemies){
             if ((enemy).getBounds().intersects(newBounds)){
                 enemy.attack(this);
@@ -153,72 +190,57 @@ public class Player implements Serializable {
                 return true;
             }
         }
+
         return false;
     }
 
-    public void moveLeft(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+
+    public void moveLeft(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit) {
         setImageL(this);
-        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-//            System.out.println("CHECK COLLISION");
-        }
-        if(checkEnemyCollision(game, enemies, newBounds)){
-//            System.out.println("CHECK ENEMY");
-        }
-        else if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
+//        checkItemCollision(game, items, trashCans, enemies, new Rectangle(x - SPEED, y, SIZE, SIZE));
+
+        if (!checkObstacleCollision(game, obstacles, doors, exit, new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             x -= SPEED;
         }else{
-            x += SPEED;
+            if (!leftCollision && !doorCollision){
+                x -= SPEED;
+            }
         }
     }
 
-    public void moveRight(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+    public void moveRight(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit) {
         setImage(this);
-        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-//            System.out.println("CHECK COLLISION");
-        }
-        if(checkEnemyCollision(game, enemies, newBounds)){
-//            System.out.println("CHECK ENEMY");
-        }
-        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
+//        checkItemCollision(game, items, trashCans, enemies, new Rectangle(x - SPEED, y, SIZE, SIZE));
+        if (!checkObstacleCollision(game, obstacles, doors, exit, new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             x += SPEED;
         }else{
-            x -= SPEED;
+            if (!rightCollision) {
+                x += SPEED;
+            }
         }
 
     }
 
-    public void moveUp(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+    public void moveUp(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit) {
         setImageB(this);
-        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-//            System.out.println("CHECK COLLISION");
-        }
-        if(checkEnemyCollision(game, enemies, newBounds)){
-//            System.out.println("CHECK ENEMY");
-        }
-        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
+//        checkItemCollision(game, items, trashCans, enemies, new Rectangle(x - SPEED, y, SIZE, SIZE));
+        if (!checkObstacleCollision(game, obstacles, doors, exit, new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             y -= SPEED;
         }else{
-            y += SPEED;
+            if(!upCollision && !doorCollision){
+                y -= SPEED;
+            }
         }
-
     }
 
-    public void moveDown(Game game, List<Obstacle> obstacles, List<Item> items, List<TrashCan> trashCans, List<Door> doors, List<Enemy> enemies, Exit exit) {
+    public void moveDown(Game game, List<Obstacle> obstacles, List<Door> doors, Exit exit) {
         setImageA(this);
-        Rectangle newBounds = new Rectangle(x - SPEED, y, SIZE, SIZE);
-        if(checkItemCollision(game, items, trashCans, doors, newBounds)){
-//            System.out.println("CHECK COLLISION");
-        }
-        if(checkEnemyCollision(game, enemies, newBounds)){
-//            System.out.println("CHECK ENEMY");
-        }
-        if (!checkObstacleCollision(game, obstacles, doors, exit, newBounds)) {
+        if (!checkObstacleCollision(game, obstacles, doors, exit, new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             y += SPEED;
         }else{
-            y -= SPEED;
+            if (!downCollision){
+                y += SPEED;
+            }
         }
 
     }
@@ -229,60 +251,38 @@ public class Player implements Serializable {
 
     public void setImage(Player e){
         if(move_count % 2 == 0){
-            e.image = new ImageIcon(getClass().getResource("/cat1.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat1.png")));
 
         }else{
-            e.image = new ImageIcon(getClass().getResource("/cat2.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat2.png")));
 
         }
         move_count++;
     }
     public void setImageA(Player e){
-        e.image = new ImageIcon(getClass().getResource("/cat_a1.png"));
+        e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat_a1.png")));
     }
     public void setImageB(Player e){
-        e.image = new ImageIcon(getClass().getResource("/cat_b.png"));
+        e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat_b.png")));
     }
     public void setImageL(Player e){
         if(move_count % 2 == 1){
-            e.image = new ImageIcon(getClass().getResource("/cat1l.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat1l.png")));
         }else{
-            e.image = new ImageIcon(getClass().getResource("/cat2l.png"));
+            e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cat2l.png")));
         }
         move_count++;
     }
     public void draw(Graphics2D g2d) {
         g2d.drawImage(image.getImage(), x, y, null);
     }
-
-    public boolean collidesWith(Rectangle rect) {
-        return getBounds().intersects(rect);
-    }
-
-    public void pickup (Item item, TrashCan trashCan){
-        inventory.add(item);
-        trashCan.content.remove(item);
-        item.taken = true;
-        //wear
-        //eat
-    }
-
     void wear(Collar collar){
-//        System.out.println("WEAR COLLAR");
         health += collar.getHealth();
         damage += collar.getDamage();
     }
 
     void eat (Food food){
-//        System.out.println("EAT FOD AM-AM-AM");
         health += food.getFoodValue();
-    }
-
-    public void addItemToInventory(Item item) {
-        if(item instanceof Food){
-            eat((Food) item);
-        }
-        inventory.add(item);
     }
 
     public void takeDamage(int damage, Enemy enemy){
@@ -293,5 +293,19 @@ public class Player implements Serializable {
     public void attackEnemy(Enemy enemy){
         Random r = new Random();
         enemy.takeDamage(r.nextInt(damage));
+    }
+    public ArrayList<Item> takeStartInventory(){
+        ArrayList<Item> load_inv = new ArrayList<>();
+        try {
+            FileInputStream fileIn = new FileInputStream("items.txt");
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            load_inv = (ArrayList<Item>) in.readObject();
+            in.close();
+            fileIn.close();
+            System.out.println("Take items from file");
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return load_inv;
     }
 }

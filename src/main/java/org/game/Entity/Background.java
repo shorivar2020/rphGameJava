@@ -1,9 +1,8 @@
 package org.game.Entity;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.io.IOException;
+import java.util.Objects;
 
 public class Background extends Entity{
     ImageIcon image;
@@ -26,28 +25,26 @@ public class Background extends Entity{
     }
 
     public void setImageAsphalt(Background o){
-        o.image = new ImageIcon(getClass().getResource("/asphalt.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/asphalt.png")));
     }
 
     public void setImageGrass(Background o){
-        o.image = new ImageIcon(getClass().getResource("/grass.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/grass.png")));
     }
 
     public void setImageFloor(Background o){
-        o.image = new ImageIcon(getClass().getResource("/floor.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/floor.png")));
     }
 
     public void setImagePlate(Background o){
-        o.image = new ImageIcon(getClass().getResource("/plate.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/plate.png")));
     }
 
     public void setImageCushion(Background o){
-        o.image = new ImageIcon(getClass().getResource("/cushion.png"));
+        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource("/cushion.png")));
     }
 
     public void draw(Graphics2D g2d) {
-//        g2d.setColor(Color.lightGray);
-//        g2d.fillRect(x, y, width, height);
         g2d.drawImage(image.getImage(), x, y, null);
     }
 

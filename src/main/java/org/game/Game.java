@@ -1,23 +1,14 @@
 package org.game;
 
 import org.game.Entity.*;
-import org.game.Entity.enemy.Dog;
 import org.game.Entity.enemy.Enemy;
-import org.game.Entity.enemy.Rat;
-import org.game.Entity.item.Food;
 import org.game.Entity.item.Item;
-import org.game.Entity.item.Key;
 import org.game.Entity.item.collar.BasicCollar;
-import org.game.Entity.item.collar.Collar;
-import org.game.Entity.item.collar.GoldCollar;
-import org.game.Entity.item.collar.SilverCollar;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +17,11 @@ import java.util.List;
  * The main class of game management
  */
 public class Game extends JPanel implements Runnable, KeyListener, Serializable {
-
+    private static final int FPS = 60;
+    private static final int DELAY = 1000 / FPS;
+    private static final int SLEEP_TIME = 10;
+    private static final int MOVEMENT_RANGE_X = 60;
+    private static final int MOVEMENT_RANGE_Y = 0;
     //Display size
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 600;
@@ -34,39 +29,34 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     private Thread thread;
     private boolean running;
 
-    private Player player;
-
+    private final Player player;
 
     //Objects of Map
-    private List<Background> backgrounds;
-    private List<Obstacle> obstacles;
-    private List<Door> doors;
-    private List<TrashCan> trashCans;
+    private final List<Background> backgrounds;
+    private final List<Obstacle> obstacles;
+    private final List<Door> doors;
+    private final List<TrashCan> trashCans;
     public List<Item> items;
-    private Exit exit;
     public List<Enemy> enemies;
+    private final Exit exit;
 
     //Displays
-    private GameOverView loseDisplay;
-    private GameWonView wonDisplay;
+    private final GameOverView loseDisplay;
+    private final GameWonView wonDisplay;
+
     //Keyboard management
     private boolean leftPressed;
     private boolean rightPressed;
     private boolean upPressed;
     private boolean downPressed;
 
-    private boolean objectInteraction;
-
+    //Fin game flags
     private boolean gameFinishWin;
     private boolean gameFinishLose;
 
+    //Interface management
+    private final InterfaceBar interfaceBar;
     private boolean showingInventory;
-
-    private int move;
-
-    //Sticky Block
-//    private Rectangle obstacle = new Rectangle(500, 300, 100, 50);
-
 
     /*
      * Set screen settings, add player and obstacles
@@ -75,121 +65,20 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         addKeyListener(this);
-        ArrayList<Item> load_inv = new ArrayList<>();
-        try {
-            FileInputStream fileIn = new FileInputStream("items.txt");
-            ObjectInputStream in = new ObjectInputStream(fileIn);
-            load_inv = (ArrayList<Item>) in.readObject();
-            in.close();
-            fileIn.close();
-            System.out.println("Список объектов загружен из файла:");
-            if(load_inv!= null){
-//                for (Item item : load_inv) {
-//                    System.out.println(item.x + " " + item.y + " " + item.name);
-//                }
-            }
 
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        player = new Player(WIDTH / 2, HEIGHT / 2, load_inv);
-
-//        System.out.print("AAAA" + player.inventory);
+        interfaceBar = new InterfaceBar();
+        player = new Player(100, 30);
 
         //Objects on Map
-        backgrounds = new ArrayList<>();
-        obstacles = new ArrayList<>();
-        doors = new ArrayList<>();
-        trashCans = new ArrayList<>();
-        items = new ArrayList<>();
-        enemies = new ArrayList<>();
-        char[][] map = new char[40][20];
-        try {
-            map = MapLoader.loadMap("src/main/resources/map.txt");
-        } catch (FileNotFoundException e) {
-            System.out.println("Файл не найден: " + e.getMessage());
-        }
-        int x_loc = 0, y_loc = 0;
-        int door_count = 0;
-        int trash_count = 0;
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 40; j++){
-                if (map[j][i] == 0){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
-                }
-                if (map[j][i] == 'g'){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false, false));
-                }
-                if (map[j][i] == 'f'){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
-                }
-                if (map[j][i] == 1){
-                    obstacles.add(new Obstacle(x_loc,y_loc,30,30, true, false));
-                }
-                if (map[j][i] == 'w'){
-                    obstacles.add(new Obstacle(x_loc,y_loc,30,30, false, true));
-                }
-                if(map[j][i] == 2){
-                    List<Item> c = new ArrayList<>();
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, true, false, false, false, false));
-                    trashCans.add(new TrashCan(x_loc, y_loc, c));
-                    trash_count++;
-                }
-                if(map[j][i] == 3){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
-                    enemies.add(new Dog(x_loc, y_loc));
-                }
-                if(map[j][i] == 4){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
-                    enemies.add(new Rat(x_loc, y_loc));
-                }
-                if(map[j][i] == 5){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
-                    exit = new Exit(x_loc, y_loc);
-                }
-                if(map[j][i] == 6){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
-                    doors.add(new Door(x_loc, y_loc, 0, false));
-                    door_count++;
-                }
-                if(map[j][i] == 7){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, true, false, false, false));
-                    doors.add(new Door(x_loc, y_loc, 0, true));
-                    door_count++;
-                }
-                if(map[j][i] == 8){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, false, true));
-                    items.add(new SilverCollar(x_loc, y_loc));
-                }
-                if(map[j][i] == 9){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, true, false, false));
-
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, false, true));
-                    items.add(new GoldCollar(x_loc, y_loc));
-                }
-                if(map[j][i] == 10){
-                    backgrounds.add(new Background(x_loc, y_loc, 30, 30, false, false, false, true, false));
-
-                    items.add(new Food(x_loc, y_loc));
-                }
-                x_loc += 30;
-            }
-
-            x_loc = 0;
-            y_loc += 30;
-        }
-        if(door_count <= trash_count){
-            for(int i = 0; i < door_count; i++){
-                doors.get(i).setDoorNumber(i);
-                trashCans.get(i).content.add(new Key(doors.get(i).x, doors.get(i).y, i));
-            }
-        }else{
-            System.out.print("TOO MANY TRASHCANS");
-        }
+        MapLoader mapLoader = new MapLoader();
+        mapLoader.mapParser();
+        backgrounds = mapLoader.backgrounds;
+        obstacles = mapLoader.obstacles;
+        doors = mapLoader.doors;
+        trashCans = mapLoader.trashCans;
+        items = mapLoader.items;
+        enemies = mapLoader.enemies;
+        exit = mapLoader.exit;
         //Displays
         loseDisplay = new GameOverView();
         wonDisplay = new GameWonView();
@@ -219,11 +108,13 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     @Override
     public void run() {
         while (running) {
-            update();
-            repaint();
-
+//            Timer timer = new Timer(DELAY, (e) -> {
+                update();
+                repaint();
+//            });
+//            timer.start();
             try {
-                Thread.sleep(10);
+                Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -231,55 +122,37 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     private void update() {
-        //if .. && !obstacle Sticky Block
         if (leftPressed) {
-            player.moveLeft(this, obstacles, items, trashCans, doors, enemies, exit);
+            player.checkItemCollision(this, items, trashCans, enemies);
+            player.moveLeft(this, obstacles, doors, exit);
         }
-
         if (rightPressed) {
-            player.moveRight(this, obstacles, items, trashCans, doors, enemies, exit);
+            player.checkItemCollision(this, items, trashCans, enemies);
+            player.moveRight(this, obstacles, doors, exit);
         }
-
         if (upPressed) {
-            player.moveUp(this, obstacles, items, trashCans, doors, enemies, exit);
+            player.checkItemCollision(this, items, trashCans, enemies);
+            player.moveUp(this, obstacles, doors, exit);
         }
-
         if (downPressed) {
-            player.moveDown(this, obstacles, items, trashCans, doors, enemies, exit);
+            player.checkItemCollision(this, items, trashCans, enemies);
+            player.moveDown(this, obstacles, doors, exit);
         }
-
-
+        for(Enemy enemy: enemies){
+            enemy.move(MOVEMENT_RANGE_X, MOVEMENT_RANGE_Y);
+        }
     }
 
     public void Win(){
-        System.out.print("WINNER");
         gameFinishWin = true;
         List<Item> itList = new ArrayList<>();
         itList.add(new BasicCollar(0, 0));
-        try {
-            FileOutputStream fileOut = new FileOutputStream("items.txt");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(itList);
-            out.close();
-            fileOut.close();
-            System.out.println("Список объектов сохранен в файл");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        interfaceBar.saveItemsInFile(itList);
     }
 
     public void Lose(){
         gameFinishLose = true;
-        try {
-            FileOutputStream fileOut = new FileOutputStream("items.txt");
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-            out.writeObject(player.inventory);
-            out.close();
-            fileOut.close();
-            System.out.println("Список объектов сохранен в файл");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        interfaceBar.saveItemsInFile(player.inventory);
     }
 
     @Override
@@ -300,7 +173,6 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         for (Door door:doors){
             door.draw(g2d);
         }
-
         for( Item item: items){
             item.draw(g2d);
         }
@@ -309,58 +181,8 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         }
         exit.draw(g2d);
 
-        BufferedImage imageInv;
-        try {
-            imageInv = ImageIO.read(getClass().getResourceAsStream("/inv_bar.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        interfaceBar.inventoryBar(g2d, showingInventory, player);
 
-        if (showingInventory) {
-            g2d.drawImage(imageInv, 0, 0, null);
-            List<Item> inventoryItems = player.inventory;
-            int x = 10;
-            int y = 10;
-            for (Item item : inventoryItems) {
-                item.x = x;
-                item.y = y;
-                item.draw(g2d);
-                x += 30;
-                if(item instanceof Collar){
-                    if(item instanceof SilverCollar){
-                        ((SilverCollar) item).x_c = x;
-                        ((SilverCollar) item).y_c = y;
-                    }
-                    if(item instanceof GoldCollar){
-                        ((GoldCollar) item).x_c = x;
-                        ((GoldCollar) item).y_c = y;
-                    }
-                    x += 30;
-                }
-            }
-        }
-        //HEALTH PANEL
-        int x_count = 20;
-//        g2d.setColor(Color.BLACK);
-//        g2d.fillRect(0, 550, 400, 50);
-        BufferedImage imageHeart;
-        BufferedImage imageBar;
-        try {
-            imageHeart = ImageIO.read(getClass().getResourceAsStream("/heart.png"));
-            imageBar = ImageIO.read(getClass().getResourceAsStream("/health_bar.png"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        g2d.drawImage(imageBar, 0, 565, null);
-        for(int i = 0; i < player.health; i++){
-            g2d.drawImage(imageHeart, x_count, 570, null);
-            x_count += 25;
-        }
-
-            for(Enemy enemy: enemies){
-                enemy.move(10 , 0);
-            }
         if(gameFinishWin){
             wonDisplay.draw(g2d);
             stop();
@@ -375,76 +197,28 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-                leftPressed = true;
-                break;
-            case KeyEvent.VK_A:
-                leftPressed = true;
-                break;
-            case KeyEvent.VK_RIGHT:
-                rightPressed = true;
-                break;
-            case KeyEvent.VK_D:
-                rightPressed = true;
-                break;
-            case KeyEvent.VK_UP:
-                upPressed = true;
-                break;
-            case KeyEvent.VK_W:
-                upPressed = true;
-                break;
-            case KeyEvent.VK_DOWN:
-                downPressed = true;
-                break;
-            case KeyEvent.VK_S:
-                downPressed = true;
-                break;
-            case KeyEvent.VK_I:
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A -> leftPressed = true;
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = true;
+            case KeyEvent.VK_UP, KeyEvent.VK_W -> upPressed = true;
+            case KeyEvent.VK_DOWN, KeyEvent.VK_S -> downPressed = true;
+            case KeyEvent.VK_I -> {
                 showingInventory = !showingInventory;
                 repaint();
-
-
+            }
         }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-                leftPressed = false;
-                break;
-            case KeyEvent.VK_A:
-                leftPressed = false;
-                break;
-            case KeyEvent.VK_RIGHT:
-                rightPressed = false;
-                break;
-            case KeyEvent.VK_D:
-                rightPressed = false;
-                break;
-            case KeyEvent.VK_UP:
-                upPressed = false;
-                break;
-            case KeyEvent.VK_W:
-                upPressed = false;
-                break;
-            case KeyEvent.VK_DOWN:
-                downPressed = false;
-                break;
-            case KeyEvent.VK_S:
-                downPressed = false;
-                break;
-
+            case KeyEvent.VK_LEFT, KeyEvent.VK_A -> leftPressed = false;
+            case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = false;
+            case KeyEvent.VK_UP, KeyEvent.VK_W -> upPressed = false;
+            case KeyEvent.VK_DOWN, KeyEvent.VK_S -> downPressed = false;
         }
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_E:
-                objectInteraction = true;
-                break;
-        }
-    }
+    public void keyTyped(KeyEvent e) {}
 
 }
