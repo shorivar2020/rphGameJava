@@ -7,11 +7,14 @@ import java.util.Objects;
 
 public class Background extends Entity implements Serializable {
     ImageIcon image;
-    public Background(int x, int y, int width, int height, boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate, boolean isCushion) {
+    public Background(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+
+    public void setImage(boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate, boolean isCushion){
         if(isGrass){
             setImageGrass(this);
         }else if(isAsphalt){

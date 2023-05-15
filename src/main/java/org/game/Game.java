@@ -73,7 +73,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
 
         //Objects on Map
         MapLoader mapLoader = new MapLoader();
-        mapLoader.mapParser();
+        mapLoader.getMapFromFile();
         backgrounds = mapLoader.getBackgrounds();
         obstacles = mapLoader.getObstacles();
         doors = mapLoader.getDoors();

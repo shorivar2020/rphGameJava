@@ -25,13 +25,18 @@ import java.util.logging.Level;
 @Setter
 public class MapLoader {
 
-    private List<Background> backgrounds;
-    private List<Obstacle> obstacles;
-    private List<Door> doors;
-    private List<TrashCan> trashCans;
-    private List<Item> items;
+    private List<Background> backgrounds = new ArrayList<>();
+    private List<Obstacle> obstacles = new ArrayList<>();
+    private List<Door> doors = new ArrayList<>();
+    private List<TrashCan> trashCans = new ArrayList<>();
+    private List<Item> items = new ArrayList<>();
     private Exit exit;
-    private List<Enemy> enemies;
+    private List<Enemy> enemies = new ArrayList<>();
+    private int xLocal = 0;
+    private int yLocal = 0;
+    private int doorCount = 0;
+    private int trashCount = 0;
+    private Background b;
 
     public static char[][] loadMap(String filename) throws FileNotFoundException {
         char[][] map = new char[40][20]; // создаем карту размером 40 на 20 квадратов
@@ -42,7 +47,7 @@ public class MapLoader {
             String line = scanner.nextLine();
             for (int col = 0; col < line.length(); col++) {
                 char c = line.charAt(col);
-                switch (c){
+                switch (c) {
                     case '0' -> map[col][row] = 0;
                     case '1' -> map[col][row] = 1;//obstacles
                     case '2' -> map[col][row] = 2;//trashcan
@@ -66,91 +71,119 @@ public class MapLoader {
         return map;
     }
 
-    public void mapParser(){
-        backgrounds = new ArrayList<>();
-        obstacles = new ArrayList<>();
-        doors = new ArrayList<>();
-        trashCans = new ArrayList<>();
-        items = new ArrayList<>();
-        enemies = new ArrayList<>();
+    public void getMapFromFile() {
         char[][] map = new char[40][20];
         try {
             map = MapLoader.loadMap("src/main/resources/map.txt");
         } catch (FileNotFoundException e) {
             log.log(Level.WARNING, "File not find" + e.getMessage());
         }
-        int xLocal = 0;
-        int yLocal = 0;
-        int doorCount = 0;
-        int trashCount = 0;
-        for(int i = 0; i < 20; i++){
-            for(int j = 0; j < 40; j++){
-                switch (map[j][i]) {
-                    case 0 -> backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, true, false, false, false));
-                    case 'g' ->
-                            backgrounds.add(new Background(xLocal, yLocal, 30, 30, true, false, false, false, false));
-                    case 'f' ->
-                            backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, true, false, false));
-                    case 1 -> obstacles.add(new Obstacle(xLocal, yLocal, 30, 30, true, false));
-                    case 'w' -> obstacles.add(new Obstacle(xLocal, yLocal, 30, 30, false, true));
-                    case 2 -> {
-                        List<Item> c = new ArrayList<>();
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, true, false, false, false, false));
-                        trashCans.add(new TrashCan(xLocal, yLocal, c));
-                        trashCount++;
-                    }
-                    case 3 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, true, false, false, false));
-                        enemies.add(new Dog(xLocal, yLocal));
-                    }
-                    case 4 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, true, false, false, false));
-                        enemies.add(new Rat(xLocal, yLocal));
-                    }
-                    case 5 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, true, false, false));
-                        exit = new Exit(xLocal, yLocal);
-                    }
-                    case 6 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, true, false, false, false));
-                        doors.add(new Door(xLocal, yLocal, 0, false));
-                        doorCount++;
-                    }
-                    case 7 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, true, false, false, false));
-                        doors.add(new Door(xLocal, yLocal, 0, true));
-                        doorCount++;
-                    }
-                    case 8 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, true, false, false));
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, false, false, true));
-                        items.add(new SilverCollar(xLocal, yLocal));
-                    }
-                    case 9 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, true, false, false));
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, false, false, true));
-                        items.add(new GoldCollar(xLocal, yLocal));
-                    }
-                    case 10 -> {
-                        backgrounds.add(new Background(xLocal, yLocal, 30, 30, false, false, false, true, false));
-                        items.add(new Food(xLocal, yLocal));
-                    }
-                    default -> log.log(Level.INFO, "Undefined part of map");
-                }
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 40; j++) {
+                mapParser(map[j][i]);
                 xLocal += 30;
             }
             xLocal = 0;
             yLocal += 30;
         }
-        keyDistributionAlgorithm(doorCount, trashCount);
+        keyDistributionAlgorithm();
     }
-    private void keyDistributionAlgorithm(int doorCount, int trashCount){
-        if(doorCount <= trashCount){
-            for(int i = 0; i < doorCount; i++){
+
+    public void mapParser(char parserChar) {
+
+        switch (parserChar) {
+            case 0 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, true, false, false, false);
+                backgrounds.add(b);
+            }
+            case 'g' -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(true, false, false, false, false);
+                backgrounds.add(b);
+            }
+            case 'f' -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, false, true, false, false);
+                backgrounds.add(b);
+            }
+            case 1 -> obstacles.add(new Obstacle(xLocal, yLocal, 30, 30, true, false));
+            case 'w' -> obstacles.add(new Obstacle(xLocal, yLocal, 30, 30, false, true));
+            case 2 -> {
+                List<Item> c = new ArrayList<>();
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(true, false, false, false, false);
+                backgrounds.add(b);
+                trashCans.add(new TrashCan(xLocal, yLocal, c));
+                trashCount++;
+            }
+            case 3 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, true, false, false, false);
+                backgrounds.add(b);
+                enemies.add(new Dog(xLocal, yLocal));
+            }
+            case 4 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, true, false, false, false);
+                backgrounds.add(b);
+                enemies.add(new Rat(xLocal, yLocal));
+            }
+            case 5 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, false, true, false, false);
+                backgrounds.add(b);
+                exit = new Exit(xLocal, yLocal);
+            }
+            case 6 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, true, false, false, false);
+                backgrounds.add(b);
+                doors.add(new Door(xLocal, yLocal, 0, false));
+                doorCount++;
+            }
+            case 7 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, true, false, false, false);
+                backgrounds.add(b);
+                doors.add(new Door(xLocal, yLocal, 0, true));
+                doorCount++;
+            }
+            case 8 -> {
+                addCushionBackground();
+                items.add(new SilverCollar(xLocal, yLocal));
+        }
+            case 9 -> {
+                addCushionBackground();
+                items.add(new GoldCollar(xLocal, yLocal));
+            }
+            case 10 -> {
+                b = new Background(xLocal, yLocal, 30, 30);
+                b.setImage(false, false, false, true, false);
+                backgrounds.add(b);
+                items.add(new Food(xLocal, yLocal));
+            }
+            default -> log.log(Level.INFO, "Undefined part of map");
+        }
+
+    }
+
+    public void addCushionBackground(){
+        b = new Background(xLocal, yLocal, 30, 30);
+        b.setImage(false, false, true, false, false);
+        backgrounds.add(b);
+        b = new Background(xLocal, yLocal, 30, 30);
+        b.setImage(false, false, false, false, true);
+        backgrounds.add(b);
+    }
+
+    private void keyDistributionAlgorithm() {
+        if (doorCount <= trashCount) {
+            for (int i = 0; i < doorCount; i++) {
                 doors.get(i).setDoorNumber(i);
                 trashCans.get(i).content.add(new Key(doors.get(i).x, doors.get(i).y, i));
             }
-        }else{
+        } else {
             log.log(Level.WARNING, "TOO LITTLE TRASHCANS");
         }
     }
