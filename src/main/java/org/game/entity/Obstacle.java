@@ -1,10 +1,11 @@
-package org.game.Entity;
+package org.game.entity;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Obstacle extends Entity{
+public class Obstacle extends Entity implements Serializable {
     ImageIcon image;
     public Obstacle(int x, int y, int width, int height, boolean isBuilding, boolean isWater) {
         this.x = x;

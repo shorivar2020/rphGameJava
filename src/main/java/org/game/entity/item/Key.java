@@ -1,4 +1,4 @@
-package org.game.Entity.item;
+package org.game.entity.item;
 
 import javax.swing.*;
 import java.awt.*;
@@ -8,14 +8,13 @@ import java.util.Objects;
 public class Key extends Item implements Serializable {
 
     int doorNumber;
-    int width = 40;
-    int height = 40;
     ImageIcon image;
     public Key(int x, int y, int doorNumber) {
-        this.name = "Key";
         this.x = x;
         this.y = y;
         this.doorNumber = doorNumber;
+        width = 40;
+        height = 40;
         setImage(this);
     }
 

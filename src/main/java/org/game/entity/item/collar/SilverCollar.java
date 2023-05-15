@@ -1,19 +1,18 @@
-package org.game.Entity.item.collar;
+package org.game.entity.item.collar;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
 
 public class SilverCollar extends Collar {
-    public int x_c;
-    public int y_c;
-    private static final int health = 1;
-    private static final int damage = 1;
+    public int xLocal;
+    public int yLocal;
     ImageIcon image;
     public SilverCollar(int x, int y){
-        this.name = "SilverCollar";
-        this.x_c = x;
-        this.y_c = y;
+        this.xLocal = x;
+        this.yLocal = y;
+        width = 20;
+        height = 5;
         setImage(this);
     }
 
@@ -22,10 +21,10 @@ public class SilverCollar extends Collar {
     }
     @Override
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(image.getImage(), x_c, y_c, null);
+        g2d.drawImage(image.getImage(), xLocal, yLocal, null);
     }
     public Rectangle getBounds() {
-        return new Rectangle(x_c, y_c, width, height);
+        return new Rectangle(xLocal, yLocal, width, height);
     }
 
 }

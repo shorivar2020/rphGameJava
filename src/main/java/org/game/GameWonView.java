@@ -2,14 +2,14 @@ package org.game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * The window that will be displayed in case the player finds a way out
  */
-public class GameWonView {
-    private static final int x = 0;
-    private static final int y = 0;
+public class GameWonView implements Serializable {
+
     ImageIcon image;
     public GameWonView(){
         setImage(this);
@@ -19,6 +19,6 @@ public class GameWonView {
     }
 
     public void draw(Graphics2D g2d) {
-        g2d.drawImage(image.getImage(), x, y, null);
+        g2d.drawImage(image.getImage(), 0, 0, null);
     }
 }

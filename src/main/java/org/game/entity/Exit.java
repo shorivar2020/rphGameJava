@@ -1,16 +1,17 @@
-package org.game.Entity;
+package org.game.entity;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Exit extends Entity{
-    int width = 50;
-    int height = 50;
+public class Exit extends Entity implements Serializable {
     ImageIcon image;
     public Exit(int x, int y) {
         this.x = x;
         this.y = y;
+        width = 50;
+        height = 50;
         setImage(this);
     }
 

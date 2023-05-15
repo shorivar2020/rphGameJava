@@ -1,18 +1,19 @@
-package org.game.Entity;
+package org.game.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.game.Entity.item.Key;
+import org.game.entity.item.Key;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
 @Setter
-public class Door extends Entity{
+public class Door extends Entity implements Serializable {
     int doorNumber;
-    public boolean locked;
+    private boolean locked;
     ImageIcon image;
 
     public Door(int x, int y, int doorNumber, boolean isVertical) {

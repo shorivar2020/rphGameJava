@@ -1,10 +1,11 @@
-package org.game.Entity;
+package org.game.entity;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Background extends Entity{
+public class Background extends Entity implements Serializable {
     ImageIcon image;
     public Background(int x, int y, int width, int height, boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate, boolean isCushion) {
         this.x = x;

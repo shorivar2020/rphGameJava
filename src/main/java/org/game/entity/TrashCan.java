@@ -1,24 +1,25 @@
-package org.game.Entity;
+package org.game.entity;
 
-import org.game.Entity.item.Item;
+import org.game.entity.item.Item;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
 
 /**
  *
  */
-public class TrashCan extends Entity{
+public class TrashCan extends Entity implements Serializable {
     public List<Item> content;
     ImageIcon image;
-    int width = 25;
-    int height = 25;
     public TrashCan(int x, int y, List<Item> content) {
         this.x = x;
         this.y = y;
         this.content = content;
+        width = 25;
+        height = 25;
         setImage(this);
     }
     public void setImage(TrashCan t){

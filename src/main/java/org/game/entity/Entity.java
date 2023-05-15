@@ -1,4 +1,4 @@
-package org.game.Entity;
+package org.game.entity;
 
 public abstract class Entity {
     public int x;

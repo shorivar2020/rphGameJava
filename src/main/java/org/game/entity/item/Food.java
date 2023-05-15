@@ -1,4 +1,4 @@
-package org.game.Entity.item;
+package org.game.entity.item;
 
 
 import javax.swing.*;
@@ -8,13 +8,12 @@ import java.util.Objects;
 
 public class Food extends Item implements Serializable {
     int value = 1;
-    int width = 25;
-    int height = 25;
     ImageIcon image;
     public Food(int x, int y) {
-        this.name = "Food";
         this.x = x;
         this.y = y;
+        width = 25;
+        height = 25;
         setImage(this);
     }
 

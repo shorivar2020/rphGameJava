@@ -1,14 +1,12 @@
-package org.game.Entity.item.collar;
+package org.game.entity.item.collar;
 
-import org.game.Entity.item.Item;
+import org.game.entity.item.Item;
 
 import java.awt.*;
 
 public abstract class Collar extends Item {
     int health;
     int damage;
-    int width = 20;
-    int height = 5;
     public int getDamage() {
         return damage;
     }
