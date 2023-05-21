@@ -1,5 +1,7 @@
 package org.game;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.java.Log;
 import org.game.entity.item.Item;
 import org.game.entity.item.collar.Collar;
@@ -8,64 +10,81 @@ import org.game.entity.item.collar.SilverCollar;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
 
+/**
+ * The interface bar that displays the inventory and health bar.
+ */
 @Log
+@Setter
+@Getter
 public class InterfaceBar {
+    private static final int BLOCK_SIZE = 30;
+    private static final int BLOCK_START = 10;
+    private static final int HEART_SIZE = 25;
+    private static final int HEART_BAR_X = 0;
+    private static final int HEART_BAR_Y = 565;
+    private static final int HEART_START_X = 20;
+    private static final int HEART_START_Y = HEART_BAR_Y + 5;
+    private static final int INVENTORY_X = 0;
+    private static final int INVENTORY_Y = 0;
+    private static final String INVENTORY_FILE_NAME = "/inv_bar.png";
+    private static final String HEART_FILE_NAME = "/heart.png";
+    private static final String HEART_PANEL_FILE_NAME = "/health_bar.png";
 
-    public void inventoryBar(Graphics2D g2d, boolean showingInventory, Player player){
+    /**
+     * Draws the inventory bar on the graphics context.
+     *
+     * @param g2d              The graphics context.
+     * @param showingInventory Indicates whether the inventory is currently being shown.
+     * @param player           The player object.
+     */
+    public void inventoryBar(Graphics2D g2d, boolean showingInventory, Player player) {
         ImageIcon imageInv;
-        imageInv = new ImageIcon(Objects.requireNonNull(getClass().getResource("/inv_bar.png")));
+        imageInv = new ImageIcon(Objects.requireNonNull(getClass().getResource(INVENTORY_FILE_NAME)));
         if (showingInventory) {
-            g2d.drawImage(imageInv.getImage(), 0, 0, null);
+            g2d.drawImage(imageInv.getImage(), INVENTORY_X, INVENTORY_Y, null);
             List<Item> inventoryItems = player.getInventory();
-            int x = 10;
-            int y = 10;
+            int x = BLOCK_START;
+            int y = BLOCK_START;
             for (Item item : inventoryItems) {
-                item.x = x;
-                item.y = y;
+                //Change location from map to inventory
+                item.setX(x);
+                item.setY(y);
                 item.draw(g2d);
-                x += 30;
-                if(item instanceof Collar){
-                    if(item instanceof SilverCollar silverCollar){
-                        silverCollar.xLocal = x;
-                        silverCollar.yLocal = y;
+                x += BLOCK_SIZE;
+                if (item instanceof Collar) {
+                    if (item instanceof SilverCollar silverCollar) {
+                        silverCollar.setXLocal(x);
+                        silverCollar.setYLocal(y);
                     }
-                    if(item instanceof GoldCollar goldCollar){
-                        goldCollar.xLocal = x;
-                        goldCollar.yLocal = y;
+                    if (item instanceof GoldCollar goldCollar) {
+                        goldCollar.setXLocal(x);
+                        goldCollar.setYLocal(y);
                     }
-                    x += 30;
+                    x += BLOCK_SIZE;
                 }
             }
         }
-        //HEALTH PANEL
+        viewHealthBar(g2d, player);
+    }
+
+    /**
+     * Draws the health bar on the graphics context.
+     *
+     * @param g2d    The graphics context.
+     * @param player The player object.
+     */
+    public void viewHealthBar(Graphics2D g2d, Player player) {
         ImageIcon imageHeart;
         ImageIcon imageBar;
-        imageHeart = new ImageIcon(Objects.requireNonNull(getClass().getResource("/heart.png")));
-        imageBar = new ImageIcon(Objects.requireNonNull(getClass().getResource("/health_bar.png")));
+        imageHeart = new ImageIcon(Objects.requireNonNull(getClass().getResource(HEART_FILE_NAME)));
+        imageBar = new ImageIcon(Objects.requireNonNull(getClass().getResource(HEART_PANEL_FILE_NAME)));
 
-        g2d.drawImage(imageBar.getImage(), 0, 565, null);
-        for(int i = 0, x_count = 20; i < player.getHealth(); i++, x_count += 25){
-            g2d.drawImage(imageHeart.getImage(), x_count, 570, null);
-        }
-    }
-    public void saveItemsInFile(List<Item> itList){
-        ObjectOutputStream out;
-        try {
-            try(FileOutputStream fileOut = new FileOutputStream("items.txt")){
-                out = new ObjectOutputStream(fileOut);
-                out.writeObject(itList);
-                out.close();
-            }
-            log.log(Level.FINE, "Items save in file");
-        } catch (IOException e) {
-            e.printStackTrace();
+        g2d.drawImage(imageBar.getImage(), HEART_BAR_X, HEART_BAR_Y, null);
+        for (int i = 0, x_count = HEART_START_X; i < player.getHealth(); i++, x_count += HEART_SIZE) {
+            g2d.drawImage(imageHeart.getImage(), x_count, HEART_START_Y, null);
         }
     }
 }

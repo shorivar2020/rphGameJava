@@ -6,15 +6,14 @@ import lombok.extern.java.Log;
 import org.game.entity.*;
 import org.game.entity.enemy.Enemy;
 import org.game.entity.item.Item;
-import org.game.entity.item.collar.BasicCollar;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.io.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 /**
  * The main class of game management
@@ -24,40 +23,45 @@ import java.util.List;
 @Setter
 public class Game extends JPanel implements Runnable, KeyListener, Serializable {
 
-    private static final int SLEEP_TIME = 10;
-    //Display size
+    // Display size
     private static final int WIDTH = 1200;
     private static final int HEIGHT = 600;
+    private static final int START_PLAYER_X = 100;
+    private static final int START_PLAYER_Y = 30;
 
+    // Threads pause
+    private static final int SLEEP_TIME = 10;
+
+    // Threads
     private transient Thread thread;
     private boolean running;
 
     private Player player;
 
-    //Objects of Map
+    // Objects of Map
     private List<Background> backgrounds;
     private List<Obstacle> obstacles;
     private List<Door> doors;
     private List<TrashCan> trashCans;
     private List<Item> items;
     private List<Enemy> enemies;
-    private final Exit exit;
+    private Exit exit;
 
-    //Displays
+    // Displays
     private final GameOverView loseDisplay;
     private final GameWonView wonDisplay;
 
-    //Keyboard management
+    // Keyboard management
     private boolean leftPressed;
     private boolean rightPressed;
     private boolean upPressed;
     private boolean downPressed;
 
-    //Fin game flags
+    // Game finish flags
     private boolean gameFinishWin;
     private boolean gameFinishLose;
 
-    //Interface management
+    // Interface management
     private static final InterfaceBar interfaceBar = new InterfaceBar();
     private boolean showingInventory;
 
@@ -69,9 +73,9 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         setFocusable(true);
         addKeyListener(this);
 
-        player = new Player(100, 30);
+        player = new Player(START_PLAYER_X, START_PLAYER_Y);
 
-        //Objects on Map
+        // Map management
         MapLoader mapLoader = new MapLoader();
         mapLoader.getMapFromFile();
         backgrounds = mapLoader.getBackgrounds();
@@ -81,11 +85,15 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         items = mapLoader.getItems();
         enemies = mapLoader.getEnemies();
         exit = mapLoader.getExit();
-        //Displays
+
+        // Displays
         loseDisplay = new GameOverView();
         wonDisplay = new GameWonView();
     }
 
+    /**
+     * Starts the game thread
+     */
     public synchronized void start() {
         if (running) {
             return;
@@ -95,6 +103,9 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         thread.start();
     }
 
+    /**
+     * Stops the game thread
+     */
     public synchronized void stop() {
         if (!running) {
             return;
@@ -111,17 +122,20 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     @Override
     public void run() {
         while (running) {
-                update();
-                repaint();
+            update();
+            repaint();
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
-                log.warning("Interrupted!");
+                log.log(Level.WARNING, "Thread was interrupted");
                 Thread.currentThread().interrupt();
             }
         }
     }
 
+    /**
+     * Updates the game state
+     */
     private void update() {
         if (leftPressed) {
             player.checkItemCollision(this, items, trashCans, enemies);
@@ -139,21 +153,25 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
             player.checkItemCollision(this, items, trashCans, enemies);
             player.moveDown(this, obstacles, doors, exit);
         }
-        for(Enemy enemy: enemies){
+        for (Enemy enemy : enemies) {
             enemy.move();
         }
     }
 
-    public void winGame(){
+    /**
+     * Sets the game state to "win" and logs the event
+     */
+    public void winGame() {
         gameFinishWin = true;
-        List<Item> itList = new ArrayList<>();
-        itList.add(new BasicCollar(0, 0));
-        interfaceBar.saveItemsInFile(itList);
+        log.log(Level.FINE, "Player won the game");
     }
 
-    public void loseGame(){
+    /**
+     * Sets the game state to "lose" and logs the event
+     */
+    public void loseGame() {
         gameFinishLose = true;
-        interfaceBar.saveItemsInFile(player.getInventory());
+        log.log(Level.FINE, "Player lost the game");
     }
 
     @Override
@@ -161,43 +179,42 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
-        for (Background background: backgrounds){
+        for (Background background : backgrounds) {
             background.draw(g2d);
         }
-        for (TrashCan trashCan: trashCans){
+        for (TrashCan trashCan : trashCans) {
             trashCan.draw(g2d);
         }
+        exit.draw(g2d);
         player.draw(g2d);
         for (Obstacle obstacle : obstacles) {
             obstacle.draw(g2d);
         }
-        for (Door door:doors){
+        for (Door door : doors) {
             door.draw(g2d);
         }
-        for( Item item: items){
+        for (Item item : items) {
             item.draw(g2d);
         }
-        for (Enemy enemy:enemies){
+        for (Enemy enemy : enemies) {
             enemy.draw(g2d);
         }
-        exit.draw(g2d);
 
         interfaceBar.inventoryBar(g2d, showingInventory, player);
 
-        if(gameFinishWin){
+        if (gameFinishWin) {
             wonDisplay.draw(g2d);
             stop();
         }
-        if(gameFinishLose){
+        if (gameFinishLose) {
             loseDisplay.draw(g2d);
             stop();
         }
-
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        //Not function been implemented
+        // Not implemented
     }
 
     @Override
@@ -211,7 +228,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
                 showingInventory = !showingInventory;
                 repaint();
             }
-            default -> log.severe("WRONG KEY");
+            default -> log.log(Level.INFO, "Player pressed wrong key");
         }
     }
 
@@ -222,9 +239,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
             case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = false;
             case KeyEvent.VK_UP, KeyEvent.VK_W -> upPressed = false;
             case KeyEvent.VK_DOWN, KeyEvent.VK_S -> downPressed = false;
-            default -> log.severe("FALSE KEY");
-
+            default -> log.log(Level.INFO, "Player released wrong key");
         }
     }
-
 }
