@@ -1,3 +1,6 @@
+/**
+ * Package of game with item type of collar.
+ */
 package org.game.entity.item.collar;
 
 import org.game.entity.item.Item;
@@ -8,8 +11,15 @@ import org.game.entity.item.Item;
  */
 public abstract class Collar extends Item {
 
-    int health;
-    int damage;
+    /**
+     * The health value of the character.
+     */
+    private int health;
+
+    /**
+     * The damage value of the character.
+     */
+    private int damage;
 
     /**
      * Returns the damage value of the collar.

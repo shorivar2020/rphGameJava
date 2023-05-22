@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -17,11 +19,30 @@ import java.util.Objects;
 @Setter
 @Getter
 public class Food extends Item implements Serializable {
-    private static final String FOOD_FILE_NAME = "/food.png";
+    /**
+     * The file name for the food texture.
+     */
+    private static final String FILE_NAME = "/food.png";
+
+    /**
+     * The size of the food item.
+     */
     private static final int SIZE = 30;
+
+    /**
+     * The value associated with the food item.
+     */
     public static final int VALUE = 1;
-    ImageIcon image;
-    int foodValue;
+
+    /**
+     * The image icon representing the food item.
+     */
+    private ImageIcon image;
+
+    /**
+     * The value of the food item.
+     */
+    private int foodValue;
 
     /**
      * Constructs a Food object with the specified position.
@@ -29,7 +50,7 @@ public class Food extends Item implements Serializable {
      * @param x the x-coordinate of the food's position
      * @param y the y-coordinate of the food's position
      */
-    public Food(int x, int y) {
+    public Food(final int x, final int y) {
         this.setX(x);
         this.setY(y);
         this.setWidth(SIZE);
@@ -38,8 +59,10 @@ public class Food extends Item implements Serializable {
         setImage(this);
     }
 
-    private void setImage(Food food) {
-        food.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(FOOD_FILE_NAME)));
+    private void setImage(final Food food) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FILE_NAME));
+        food.image = new ImageIcon(img);
     }
 
     /**
@@ -47,7 +70,7 @@ public class Food extends Item implements Serializable {
      *
      * @param g2d the Graphics2D object to draw on
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 

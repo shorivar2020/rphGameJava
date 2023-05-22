@@ -3,70 +3,155 @@ package org.game;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.game.entity.*;
 import org.game.entity.enemy.Enemy;
 import org.game.entity.item.Item;
+import org.game.entity.Background;
+import org.game.entity.TrashCan;
+import org.game.entity.Door;
+import org.game.entity.Exit;
+import org.game.entity.Obstacle;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JPanel;
+import java.awt.Dimension;
+import java.awt.Graphics2D;
+import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 
 /**
- * The main class of game management
+ * The main class of game management.
  */
 @Log
 @Getter
 @Setter
-public class Game extends JPanel implements Runnable, KeyListener, Serializable {
+public class Game extends JPanel implements Runnable, KeyListener {
 
-    // Display size
-    private static final int WIDTH = 1200;
-    private static final int HEIGHT = 600;
-    private static final int START_PLAYER_X = 100;
-    private static final int START_PLAYER_Y = 30;
+    /**
+     * The width of the game window.
+     */
+    public static final int WIDTH = 1200;
 
-    // Threads pause
+    /**
+     * The height of the game window.
+     */
+    public static final int HEIGHT = 600;
+
+    /**
+     * The starting X coordinate of the player.
+     */
+    public static final int START_PLAYER_X = 100;
+
+    /**
+     * The starting Y coordinate of the player.
+     */
+    public static final int START_PLAYER_Y = 30;
+
+    /**
+     * Threads pause.
+     */
     private static final int SLEEP_TIME = 10;
 
-    // Threads
+    /**
+     * The thread responsible for executing the task.
+     */
     private transient Thread thread;
-    private boolean running;
 
+    /**
+     * A flag indicating whether the task is currently running.
+     */
+    private boolean running;
+    /**
+     * The player object representing the main character of the game.
+     */
     private Player player;
 
-    // Objects of Map
+    /**
+     * The list of background objects in the game map.
+     */
     private List<Background> backgrounds;
-    private List<Obstacle> obstacles;
-    private List<Door> doors;
-    private List<TrashCan> trashCans;
-    private List<Item> items;
-    private List<Enemy> enemies;
-    private Exit exit;
 
-    // Displays
+    /**
+     * The list of obstacle objects in the game map.
+     */
+    private List<Obstacle> obstacles;
+
+    /**
+     * The list of door objects in the game map.
+     */
+    private List<Door> doors;
+
+    /**
+     * The list of trash can objects in the game map.
+     */
+    private List<TrashCan> trashCans;
+
+    /**
+     * The list of item objects in the game map.
+     */
+    private List<Item> items;
+
+    /**
+     * The list of enemy objects in the game map.
+     */
+    private List<Enemy> enemies;
+
+    /**
+     * The exit object representing the exit point of the game map.
+     */
+    private Exit exit;
+    /**
+     * The view displayed when the game is lost.
+     */
     private final GameOverView loseDisplay;
+
+    /**
+     * The view displayed when the game is won.
+     */
     private final GameWonView wonDisplay;
 
-    // Keyboard management
+    /**
+     * A flag indicating whether the left arrow key is pressed.
+     */
     private boolean leftPressed;
+
+    /**
+     * A flag indicating whether the right arrow key is pressed.
+     */
     private boolean rightPressed;
+
+    /**
+     * A flag indicating whether the up arrow key is pressed.
+     */
     private boolean upPressed;
+
+    /**
+     * A flag indicating whether the down arrow key is pressed.
+     */
     private boolean downPressed;
 
-    // Game finish flags
+    /**
+     * A flag indicating whether the game is finished with a win.
+     */
     private boolean gameFinishWin;
+
+    /**
+     * A flag indicating whether the game is finished with a loss.
+     */
     private boolean gameFinishLose;
 
-    // Interface management
-    private static final InterfaceBar interfaceBar = new InterfaceBar();
+    /**
+     * The interface bar object that handles the game's interface.
+     */
+    private static InterfaceBar interfaceBar = new InterfaceBar();
+    /**
+     * A boolean flag indicating whether the inventory is currently being shown.
+     */
     private boolean showingInventory;
 
-    /*
-     * Set screen settings, add player and obstacles
+    /**
+     * Set screen settings, add player and obstacles.
      */
     public Game() {
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
@@ -92,7 +177,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     /**
-     * Starts the game thread
+     * Starts the game thread.
      */
     public synchronized void start() {
         if (running) {
@@ -104,7 +189,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     /**
-     * Stops the game thread
+     * Stops the game thread.
      */
     public synchronized void stop() {
         if (!running) {
@@ -134,7 +219,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     /**
-     * Updates the game state
+     * Updates the game state.
      */
     private void update() {
         if (leftPressed) {
@@ -159,7 +244,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     /**
-     * Sets the game state to "win" and logs the event
+     * Sets the game state to win.
      */
     public void winGame() {
         gameFinishWin = true;
@@ -167,7 +252,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     /**
-     * Sets the game state to "lose" and logs the event
+     * Sets the game state to lose.
      */
     public void loseGame() {
         gameFinishLose = true;
@@ -175,7 +260,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     @Override
-    public void paintComponent(Graphics g) {
+    public void paintComponent(final Graphics g) {
         super.paintComponent(g);
 
         Graphics2D g2d = (Graphics2D) g;
@@ -213,12 +298,12 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
+    public void keyTyped(final KeyEvent e) {
         // Not implemented
     }
 
     @Override
-    public void keyPressed(KeyEvent e) {
+    public void keyPressed(final KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT, KeyEvent.VK_A -> leftPressed = true;
             case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = true;
@@ -233,7 +318,7 @@ public class Game extends JPanel implements Runnable, KeyListener, Serializable 
     }
 
     @Override
-    public void keyReleased(KeyEvent e) {
+    public void keyReleased(final KeyEvent e) {
         switch (e.getKeyCode()) {
             case KeyEvent.VK_LEFT, KeyEvent.VK_A -> leftPressed = false;
             case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = false;

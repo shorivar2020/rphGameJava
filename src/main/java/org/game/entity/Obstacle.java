@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -17,10 +19,26 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Obstacle extends Entity implements Serializable {
+    /**
+     * The size of the obstacle.
+     */
     private static final int SIZE = 30;
-    private static final String OBSTACLE_FILE_NAME_BUILDING = "/bricks.png";
-    private static final String OBSTACLE_FILE_NAME_WATER = "/water.png";
-    ImageIcon image;
+
+    /**
+     * The file name for the building obstacle texture.
+     */
+    private static final String FILE_NAME_BUILDING = "/bricks.png";
+
+    /**
+     * The file name for the water obstacle texture.
+     */
+    private static final String FILE_NAME_WATER = "/water.png";
+
+    /**
+     * The image icon representing the obstacle.
+     */
+    private ImageIcon image;
+
 
     /**
      * Constructs a new Obstacle object with the specified coordinates and type.
@@ -30,7 +48,8 @@ public class Obstacle extends Entity implements Serializable {
      * @param isBuilding True if the obstacle is a building, false otherwise.
      * @param isWater    True if the obstacle is water, false otherwise.
      */
-    public Obstacle(int x, int y, boolean isBuilding, boolean isWater) {
+    public Obstacle(final int x, final int y,
+                    final boolean isBuilding, final boolean isWater) {
         this.setX(x);
         this.setY(y);
         this.setWidth(SIZE);
@@ -47,8 +66,10 @@ public class Obstacle extends Entity implements Serializable {
      *
      * @param o The Obstacle object to set the image for.
      */
-    public void setImageBuilding(Obstacle o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(OBSTACLE_FILE_NAME_BUILDING)));
+    public void setImageBuilding(final Obstacle o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FILE_NAME_BUILDING));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -56,8 +77,10 @@ public class Obstacle extends Entity implements Serializable {
      *
      * @param o The Obstacle object to set the image for.
      */
-    public void setImageWater(Obstacle o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(OBSTACLE_FILE_NAME_WATER)));
+    public void setImageWater(final Obstacle o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FILE_NAME_WATER));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -65,7 +88,7 @@ public class Obstacle extends Entity implements Serializable {
      *
      * @param g2d The graphics context.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 

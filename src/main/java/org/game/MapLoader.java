@@ -3,7 +3,11 @@ package org.game;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
-import org.game.entity.*;
+import org.game.entity.TrashCan;
+import org.game.entity.Obstacle;
+import org.game.entity.Background;
+import org.game.entity.Door;
+import org.game.entity.Exit;
 import org.game.entity.enemy.Dog;
 import org.game.entity.enemy.Enemy;
 import org.game.entity.enemy.Rat;
@@ -15,6 +19,8 @@ import org.game.entity.item.collar.SilverCollar;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -27,26 +33,89 @@ import java.util.logging.Level;
 @Getter
 @Setter
 public class MapLoader {
+    /**
+     * The file name of the map file.
+     */
     private static final String FILE_MAP_NAME = "src/main/resources/map.txt";
+
+    /**
+     * The height of the map.
+     */
     private static final int MAP_HEIGHT = 20;
+
+    /**
+     * The width of the map.
+     */
     private static final int MAP_WIDTH = 40;
+
+    /**
+     * The size of a block on the map.
+     */
     private static final int BLOCK_SIZE = 30;
+
+    /**
+     * The starting point for blocks on the map.
+     */
     private static final int BLOCK_START = 0;
-    //Objects on map
+
+    /**
+     * The list of background objects on the map.
+     */
     private List<Background> backgrounds = new ArrayList<>();
+
+    /**
+     * The list of obstacle objects on the map.
+     */
     private List<Obstacle> obstacles = new ArrayList<>();
+
+    /**
+     * The list of door objects on the map.
+     */
     private List<Door> doors = new ArrayList<>();
+
+    /**
+     * The list of trash can objects on the map.
+     */
     private List<TrashCan> trashCans = new ArrayList<>();
+
+    /**
+     * The list of item objects on the map.
+     */
     private List<Item> items = new ArrayList<>();
+
+    /**
+     * The exit object on the map.
+     */
     private Exit exit;
+
+    /**
+     * The list of enemy objects on the map.
+     */
     private List<Enemy> enemies = new ArrayList<>();
-    //Count block layout
+
+    /**
+     * The x-coordinate for block layout.
+     */
     private int xLocal = 0;
+
+    /**
+     * The y-coordinate for block layout.
+     */
     private int yLocal = 0;
-    //Key distribution algorithm
+
+    /**
+     * The count of door objects on the map.
+     */
     private int doorCount = 0;
+
+    /**
+     * The count of trash can objects on the map.
+     */
     private int trashCount = 0;
-    //Background for items
+
+    /**
+     * The background object for items.
+     */
     private Background b;
 
     /**
@@ -56,10 +125,11 @@ public class MapLoader {
      * @return The 2D char array representation of the map.
      * @throws FileNotFoundException if the map file is not found.
      */
-    public static char[][] loadMap(String filename) throws FileNotFoundException {
+    public static char[][] loadMap(final String filename)
+            throws IOException {
         char[][] map = new char[MAP_WIDTH][MAP_HEIGHT];
         File file = new File(filename);
-        Scanner scanner = new Scanner(file);
+        Scanner scanner = new Scanner(file, StandardCharsets.UTF_8);
         int row = 0;
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -80,7 +150,7 @@ public class MapLoader {
                     case 'g' -> map[col][row] = 'g'; // grass
                     case 'f' -> map[col][row] = 'f'; // floor
                     case 'w' -> map[col][row] = 'w';
-                    default -> log.log(Level.WARNING, "Undefined part of the map");
+                    default -> log.log(Level.WARNING, "Undefined part of map");
                 }
             }
             row++;
@@ -97,7 +167,7 @@ public class MapLoader {
         try {
             map = MapLoader.loadMap(FILE_MAP_NAME);
             log.log(Level.FINE, "Map file was loaded successfully");
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             log.log(Level.SEVERE, "Map file not found", e);
         }
         for (int i = 0; i < MAP_HEIGHT; i++) {
@@ -117,7 +187,7 @@ public class MapLoader {
      *
      * @param parserChar The character to be parsed.
      */
-    public void mapParser(char parserChar) {
+    public void mapParser(final char parserChar) {
         switch (parserChar) {
             case 0 -> {
                 b = new Background(xLocal, yLocal);
@@ -135,7 +205,8 @@ public class MapLoader {
                 backgrounds.add(b);
             }
             case 1 -> obstacles.add(new Obstacle(xLocal, yLocal, true, false));
-            case 'w' -> obstacles.add(new Obstacle(xLocal, yLocal, false, true));
+            case 'w' ->
+                    obstacles.add(new Obstacle(xLocal, yLocal, false, true));
             case 2 -> {
                 List<Item> c = new ArrayList<>();
                 b = new Background(xLocal, yLocal);
@@ -214,7 +285,8 @@ public class MapLoader {
             for (int i = 0; i < doorCount; i++) {
                 doors.get(i).setDoorNumber(i);
                 List<Item> itemList = trashCans.get(i).getContent();
-                itemList.add(new Key(doors.get(i).getX(), doors.get(i).getY(), i));
+                Key key = new Key(doors.get(i).getX(), doors.get(i).getY(), i);
+                itemList.add(key);
                 trashCans.get(i).setContent(itemList);
             }
             log.log(Level.FINE, "Keys were distributed successfully");

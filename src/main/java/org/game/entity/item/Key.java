@@ -4,9 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -17,9 +19,24 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Key extends Item implements Serializable {
+    /**
+     * The file name for the key texture.
+     */
     private static final String KEY_FILE_NAME = "/key.png";
+
+    /**
+     * The size of the key.
+     */
     private static final int SIZE = 30;
+
+    /**
+     * The number associated with the door that the key unlocks.
+     */
     private int doorNumber;
+
+    /**
+     * The image icon representing the key.
+     */
     private ImageIcon image;
 
     /**
@@ -27,12 +44,12 @@ public class Key extends Item implements Serializable {
      *
      * @param x          The x-coordinate of the key's position.
      * @param y          The y-coordinate of the key's position.
-     * @param doorNumber The door number associated with the key.
+     * @param dNum The door number associated with the key.
      */
-    public Key(int x, int y, int doorNumber) {
+    public Key(final int x, final int y, final int dNum) {
         this.setX(x);
         this.setY(y);
-        this.setDoorNumber(doorNumber);
+        this.setDoorNumber(dNum);
         this.setWidth(SIZE);
         this.setHeight(SIZE);
         setImage(this);
@@ -43,8 +60,9 @@ public class Key extends Item implements Serializable {
      *
      * @param t The Key object.
      */
-    public void setImage(Key t) {
-        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(KEY_FILE_NAME)));
+    public void setImage(final Key t) {
+        URL img = Objects.requireNonNull(getClass().getResource(KEY_FILE_NAME));
+        t.image = new ImageIcon(img);
     }
 
     /**
@@ -52,7 +70,7 @@ public class Key extends Item implements Serializable {
      *
      * @param g2d The graphics context.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 
@@ -68,10 +86,10 @@ public class Key extends Item implements Serializable {
     /**
      * Checks if the key matches the given door number.
      *
-     * @param doorNumber The door number to check against.
+     * @param dNum The door number to check against.
      * @return true if the key matches the door number, false otherwise.
      */
-    public boolean isRightDoor(int doorNumber) {
-        return this.doorNumber == doorNumber;
+    public boolean isRightDoor(final int dNum) {
+        return this.doorNumber == dNum;
     }
 }

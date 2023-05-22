@@ -1,12 +1,17 @@
+/**
+ * Package of game with entity (prayer can interact with it).
+ */
 package org.game.entity;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -17,11 +22,33 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Background extends Entity implements Serializable {
+    /**
+     * The file name for the grass texture.
+     */
     private static final String GRASS_FILE_NAME = "/grass.png";
+
+    /**
+     * The file name for the asphalt texture.
+     */
     private static final String ASPHALT_FILE_NAME = "/asphalt.png";
+
+    /**
+     * The file name for the floor texture.
+     */
     private static final String FLOOR_FILE_NAME = "/floor.png";
+
+    /**
+     * The file name for the plate texture.
+     */
     private static final String PLATE_FILE_NAME = "/plate.png";
+
+    /**
+     * The file name for the cushion texture.
+     */
     private static final String CUSHION_FILE_NAME = "/cushion.png";
+    /**
+     * The image associated with the game win view.
+     */
     private ImageIcon image;
 
     /**
@@ -30,7 +57,7 @@ public class Background extends Entity implements Serializable {
      * @param x The x-coordinate of the background's position.
      * @param y The y-coordinate of the background's position.
      */
-    public Background(int x, int y) {
+    public Background(final int x, final int y) {
         this.setX(x);
         this.setY(y);
     }
@@ -44,7 +71,9 @@ public class Background extends Entity implements Serializable {
      * @param isPlate   Flag indicating if the background should be a plate.
      * @param isCushion Flag indicating if the background should be a cushion.
      */
-    public void setImage(boolean isGrass, boolean isAsphalt, boolean isFloor, boolean isPlate, boolean isCushion) {
+    public void setImage(final boolean isGrass, final boolean isAsphalt,
+                         final boolean isFloor, final boolean isPlate,
+                         final boolean isCushion) {
         if (isGrass) {
             setImageGrass(this);
         } else if (isAsphalt) {
@@ -63,8 +92,10 @@ public class Background extends Entity implements Serializable {
      *
      * @param o The Background object.
      */
-    public void setImageAsphalt(Background o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(ASPHALT_FILE_NAME)));
+    public void setImageAsphalt(final Background o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(ASPHALT_FILE_NAME));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -72,8 +103,10 @@ public class Background extends Entity implements Serializable {
      *
      * @param o The Background object.
      */
-    public void setImageGrass(Background o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(GRASS_FILE_NAME)));
+    public void setImageGrass(final Background o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(GRASS_FILE_NAME));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -81,8 +114,10 @@ public class Background extends Entity implements Serializable {
      *
      * @param o The Background object.
      */
-    public void setImageFloor(Background o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(FLOOR_FILE_NAME)));
+    public void setImageFloor(final Background o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FLOOR_FILE_NAME));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -90,8 +125,10 @@ public class Background extends Entity implements Serializable {
      *
      * @param o The Background object.
      */
-    public void setImagePlate(Background o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(PLATE_FILE_NAME)));
+    public void setImagePlate(final Background o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(PLATE_FILE_NAME));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -99,8 +136,10 @@ public class Background extends Entity implements Serializable {
      *
      * @param o The Background object.
      */
-    public void setImageCushion(Background o) {
-        o.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(CUSHION_FILE_NAME)));
+    public void setImageCushion(final Background o) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(CUSHION_FILE_NAME));
+        o.image = new ImageIcon(img);
     }
 
     /**
@@ -108,7 +147,7 @@ public class Background extends Entity implements Serializable {
      *
      * @param g2d The graphics context.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 

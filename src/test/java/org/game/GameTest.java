@@ -51,48 +51,49 @@ public class GameTest {
     }
     @Test
     public void testEnemyKill() {
-        // Создайте экземпляр игры и игрового панели
         Game game = new Game();
         game.start();
         game.setObstacles(new ArrayList<>());
-        // Создайте экземпляр врага и добавьте его на игровую панель
+        // Create an instance of an enemy and add it to the game panel
         Rat rat = new Rat(0, 20);
         List<Enemy> enemies = new ArrayList<>();
         enemies.add(rat);
         game.setEnemies(enemies);
 
-        // Установите начальное значение жизней врага
+        // Set the initial health value of the enemy
         int initialEnemyHealth = rat.getHealth();
 
-        // Вызовите метод атаки или действие, которое должно привести к убийству врага
-        // Например, вызовите метод игрока, который наносит урон врагу
+        // Call the attack method or action that should result in the enemy's death
+        // For example, invoke a player method that deals damage to the enemy
         game.getPlayer().attackEnemy(rat);
 
-        // Проверьте, что жизни врага уменьшились на правильное значение после атаки
+        // Assert that the enemy's health has decreased from its initial value
         assertTrue(initialEnemyHealth > rat.getHealth());
-        // Проверьте, что враг был убит
-        assertTrue(!rat.isAlive());
+
+        // Assert that the enemy is no longer alive
+        assertFalse(rat.isAlive());
     }
 
     @Test
     public void testGameLose() {
-        // Создайте экземпляр игры и игровой панели
+        // Create an instance of the game and game panel
         Game game = new Game();
         game.start();
 
-        // Установите начальное значение состояния игры
+        // Set the initial value of the game's state
         boolean initialGameEnded = game.isGameFinishLose();
 
-        // Вызовите метод или выполните действие, которое должно привести к концу игры
-        // Например, вызовите метод, который проверяет условия поражения игрока
+        // Call a method or perform an action that should result in the game ending
+        // For example, invoke a method that checks the player's defeat conditions
         Dog dog = new Dog(0, 0);
         game.setPlayer(new Player(0, 0));
         List<Enemy> enemies = new ArrayList<>();
         enemies.add(dog);
         game.setEnemies(enemies);
-        game.getPlayer().takeDamage(game.getPlayer().getHealth()+1, dog);
+        game.getPlayer().takeDamage(game.getPlayer().getHealth() + 1, dog);
         game.getPlayer().checkItemCollision(game, game.getItems(), game.getTrashCans(), game.getEnemies());
-        // Проверьте, что состояние игры изменилось и игра закончилась
+
+        // Check that the game's state has changed and the game has ended
         assertFalse(initialGameEnded);
         assertTrue(game.isGameFinishLose());
     }

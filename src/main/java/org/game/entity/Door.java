@@ -5,9 +5,11 @@ import lombok.Setter;
 import lombok.extern.java.Log;
 import org.game.entity.item.Key;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -18,27 +20,54 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Door extends Entity implements Serializable {
-    private static final String DOOR_FILE_NAME_HORIZONTAL = "/door_g.png";
-    private static final String DOOR_FILE_NAME_VERTICAL = "/door_v.png";
-
-    private static final int SIZE_FIRST = 25;
-    private static final int SIZE_SECOND = 90;
-    private int doorNumber;
-    private boolean locked;
-    private ImageIcon image;
+    /**
+     * The file name for the horizontal door texture.
+     */
+    private static final String FILE_NAME_HORIZONTAL = "/door_g.png";
 
     /**
-     * Constructs a Door object with the specified position, door number, and orientation.
+     * The file name for the vertical door texture.
+     */
+    private static final String FILE_NAME_VERTICAL = "/door_v.png";
+
+    /**
+     * The size of the door's first dimension.
+     */
+    private static final int SIZE_FIRST = 25;
+
+    /**
+     * The size of the door's second dimension.
+     */
+    private static final int SIZE_SECOND = 90;
+
+    /**
+     * The number associated with the door.
+     */
+    private int doorNumber;
+
+    /**
+     * Indicates whether the door is locked or not.
+     */
+    private boolean locked;
+
+    /**
+     * The image icon representing the door.
+     */
+    private ImageIcon image;
+    /**
+     * Constructs a Door object with the specified position,
+     * door number, and orientation.
      *
      * @param x            The x-coordinate of the door's position.
      * @param y            The y-coordinate of the door's position.
-     * @param doorNumber   The number of the door.
-     * @param isVertical   Flag indicating if the door is vertical or horizontal.
+     * @param dNum         The number of the door.
+     * @param isVertical   Flag indicating if the door is vertical/horizontal.
      */
-    public Door(int x, int y, int doorNumber, boolean isVertical) {
+    public Door(final int x, final int y,
+                final int dNum, final boolean isVertical) {
         this.setX(x);
         this.setY(y);
-        this.doorNumber = doorNumber;
+        this.doorNumber = dNum;
         this.locked = true;
         if (isVertical) {
             setWidth(SIZE_FIRST);
@@ -56,8 +85,10 @@ public class Door extends Entity implements Serializable {
      *
      * @param e The Door object.
      */
-    public void setImage(Door e) {
-        e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(DOOR_FILE_NAME_HORIZONTAL)));
+    public void setImage(final Door e) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FILE_NAME_HORIZONTAL));
+        e.image = new ImageIcon(img);
     }
 
     /**
@@ -65,8 +96,10 @@ public class Door extends Entity implements Serializable {
      *
      * @param e The Door object.
      */
-    public void setImageVertical(Door e) {
-        e.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(DOOR_FILE_NAME_VERTICAL)));
+    public void setImageVertical(final Door e) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(FILE_NAME_VERTICAL));
+        e.image = new ImageIcon(img);
     }
 
     /**
@@ -75,7 +108,7 @@ public class Door extends Entity implements Serializable {
      *
      * @param key The key used to unlock the door.
      */
-    public void unlock(Key key) {
+    public void unlock(final Key key) {
         if (key.isRightDoor(doorNumber)) {
             locked = false;
         }
@@ -86,7 +119,7 @@ public class Door extends Entity implements Serializable {
      *
      * @param g2d The graphics context.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 

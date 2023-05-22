@@ -2,9 +2,10 @@ package org.game;
 
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Graphics2D;
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -12,10 +13,19 @@ import java.util.Objects;
  */
 @Log
 public class GameOverView implements Serializable {
-
-    private static final String GAME_OVER_VIEW_NAME_FILE = "/game_over.png";
+    /**
+     * The file name of the game win view image.
+     */
+    private static final String NAME_FILE = "/game_over.png";
+    /**
+     * The starting window value.
+     */
     private static final int START_WINDOW = 0;
-    ImageIcon image;
+
+    /**
+     * The image associated with the game win view.
+     */
+    private ImageIcon image;
 
     /**
      * Constructs a new GameOverView object.
@@ -29,8 +39,10 @@ public class GameOverView implements Serializable {
      *
      * @param t The GameOverView object to set the image for.
      */
-    public void setImage(GameOverView t) {
-        t.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(GAME_OVER_VIEW_NAME_FILE)));
+    public void setImage(final GameOverView t) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(NAME_FILE));
+        t.image = new ImageIcon(img);
     }
 
     /**
@@ -38,7 +50,7 @@ public class GameOverView implements Serializable {
      *
      * @param g2d The graphics context.
      */
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), START_WINDOW, START_WINDOW, null);
     }
 }

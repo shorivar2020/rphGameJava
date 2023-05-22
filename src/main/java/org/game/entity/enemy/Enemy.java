@@ -6,7 +6,8 @@ import lombok.extern.java.Log;
 import org.game.entity.Entity;
 import org.game.Player;
 
-import java.awt.*;
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.io.Serializable;
 
 /**
@@ -16,15 +17,21 @@ import java.io.Serializable;
 @Getter
 @Setter
 public abstract class Enemy extends Entity implements Serializable {
-    int health;
-    int damage;
+    /**
+     Represents a character's health.
+     */
+    private int health;
+    /**
+     Represents a character's damage.
+     */
+    private int damage;
 
     /**
      * Takes the specified amount of damage.
      *
-     * @param damage the amount of damage to take
+     * @param playerDamage the amount of damage to take
      */
-    public abstract void takeDamage(int damage);
+    public abstract void takeDamage(int playerDamage);
 
     /**
      * Returns the bounding rectangle of the enemy.

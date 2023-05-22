@@ -4,8 +4,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Rectangle;
+import java.awt.Graphics2D;
+import java.net.URL;
 import java.util.Objects;
 
 /**
@@ -16,12 +18,36 @@ import java.util.Objects;
 @Getter
 @Setter
 public class GoldCollar extends Collar {
+    /**
+     * The file name for the gold collar texture.
+     */
     private static final String GOLD_COLLAR_FILE_NAME = "/gold_collar.png";
+
+    /**
+     * The width size of the gold collar.
+     */
     private static final int WIDTH_SIZE = 20;
+
+    /**
+     * The height size of the gold collar.
+     */
     private static final int HEIGHT_SIZE = 5;
+
+    /**
+     * The x-coordinate for the gold collar's position.
+     */
     private int xLocal;
+
+    /**
+     * The y-coordinate for the gold collar's position.
+     */
     private int yLocal;
-    ImageIcon image;
+
+    /**
+     * The image icon representing the gold collar.
+     */
+    private ImageIcon image;
+
 
     /**
      * Constructs a GoldCollar object with the specified position.
@@ -29,7 +55,7 @@ public class GoldCollar extends Collar {
      * @param x the x-coordinate of the collar's position
      * @param y the y-coordinate of the collar's position
      */
-    public GoldCollar(int x, int y) {
+    public GoldCollar(final int x, final int y) {
         this.xLocal = x;
         this.yLocal = y;
         this.setWidth(WIDTH_SIZE);
@@ -37,8 +63,10 @@ public class GoldCollar extends Collar {
         setImage(this);
     }
 
-    private void setImage(GoldCollar collar) {
-        collar.image = new ImageIcon(Objects.requireNonNull(getClass().getResource(GOLD_COLLAR_FILE_NAME)));
+    private void setImage(final GoldCollar collar) {
+        URL img = Objects.
+                requireNonNull(getClass().getResource(GOLD_COLLAR_FILE_NAME));
+        collar.image = new ImageIcon(img);
     }
 
     /**
@@ -47,7 +75,7 @@ public class GoldCollar extends Collar {
      * @param g2d the Graphics2D object to draw on
      */
     @Override
-    public void draw(Graphics2D g2d) {
+    public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), xLocal, yLocal, null);
     }
 
