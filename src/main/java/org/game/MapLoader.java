@@ -1,3 +1,10 @@
+/**
+ * This is the loader map class of the game
+ *
+ * @version 1.0
+ * @see Game
+ * @since 1.0
+ */
 package org.game;
 
 import lombok.Getter;
@@ -75,7 +82,7 @@ public class MapLoader {
     private List<Door> doors = new ArrayList<>();
 
     /**
-     * The list of trash can objects on the map.
+     * The list of trashcan objects on the map.
      */
     private List<TrashCan> trashCans = new ArrayList<>();
 
@@ -122,11 +129,12 @@ public class MapLoader {
     /**
      * Loads the map from a file.
      *
-     * @param filename The filename of the map file.
-     * @return The 2D char array representation of the map.
-     * @throws FileNotFoundException if the map file is not found.
+     * @param filename The filename of the map file
+     * @param eLog     Flag indicate logging of game
+     * @return The 2D char array representation of the map
+     * @throws FileNotFoundException if the map file is not found
      */
-    public static char[][] loadMap(final String filename, boolean enableLogging)
+    public static char[][] loadMap(final String filename, final boolean eLog)
             throws IOException {
         char[][] map = new char[MAP_WIDTH][MAP_HEIGHT];
         File file = new File(filename);
@@ -152,7 +160,7 @@ public class MapLoader {
                     case 'f' -> map[col][row] = 'f'; // floor
                     case 'w' -> map[col][row] = 'w';
                     default -> {
-                        if (enableLogging) {
+                        if (eLog) {
                             log.log(Level.WARNING, "Undefined part of map");
                         }
                     }
@@ -166,8 +174,10 @@ public class MapLoader {
 
     /**
      * Loads the map and its objects from the map file.
+     *
+     * @param enableLogging Flag indicate logging of game
      */
-    public void getMapFromFile(boolean enableLogging) {
+    public void getMapFromFile(final boolean enableLogging) {
         char[][] map = new char[MAP_WIDTH][MAP_HEIGHT];
         try {
             map = MapLoader.loadMap(FILE_MAP_NAME, enableLogging);
@@ -196,7 +206,8 @@ public class MapLoader {
     /**
      * Parses the character from the map and creates the corresponding objects.
      *
-     * @param parserChar The character to be parsed.
+     * @param parserChar    The character to be parsed
+     * @param enableLogging Flag indicate logging of game
      */
     public void mapParser(final char parserChar, boolean enableLogging) {
         switch (parserChar) {
@@ -280,7 +291,7 @@ public class MapLoader {
     }
 
     /**
-     * Adds a cushion background to the list of backgrounds.
+     * Adds a background for cushion to the list of backgrounds.
      */
     public void addCushionBackground() {
         b = new Background(xLocal, yLocal);
@@ -292,9 +303,12 @@ public class MapLoader {
     }
 
     /**
-     * Distributes keys to doors based on a key distribution algorithm.
+     * Distributes keys of doors to trashcans
+     * based on a key distribution algorithm.
+     *
+     * @param enableLogging Flag indicate logging of game
      */
-    private void keyDistributionAlgorithm(boolean enableLogging) {
+    private void keyDistributionAlgorithm(final boolean enableLogging) {
         if (doorCount <= trashCount) {
             for (int i = 0; i < doorCount; i++) {
                 doors.get(i).setDoorNumber(i);
@@ -308,7 +322,7 @@ public class MapLoader {
             }
         } else {
             if (enableLogging) {
-                log.log(Level.WARNING, "Too few trash cans for key distribution");
+                log.log(Level.WARNING, "Too few trashcans for distribution");
             }
         }
     }

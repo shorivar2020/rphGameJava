@@ -1,3 +1,10 @@
+/**
+ * This is the player class of the game.
+ *
+ * @version 1.0
+ * @see Player
+ * @since 1.0
+ */
 package org.game;
 
 import lombok.Getter;
@@ -57,25 +64,24 @@ public class Player implements Serializable {
     private static final String FILE_NAME_RIGHT_2 = "/cat2.png";
 
     /**
-     * The file name of the player's image facing left in the first frame.
+     * The file name of the player's image left in the first frame.
      */
     private static final String FILE_NAME_LEFT_1 = "/cat1l.png";
 
     /**
-     * The file name of the player's image facing left in the second frame.
+     * The file name of the player's image left in the second frame.
      */
     private static final String FILE_NAME_LEFT_2 = "/cat2l.png";
 
     /**
-     * The file name of the player's image facing up.
+     * The file name of the player's image up.
      */
     private static final String FILE_NAME_UP = "/cat_a1.png";
 
     /**
-     * The file name of the player's image facing down.
+     * The file name of the player's image down.
      */
     private static final String FILE_NAME_DOWN = "/cat_b.png";
-
 
     /**
      * The starting health value for a player.
@@ -85,63 +91,64 @@ public class Player implements Serializable {
     /**
      * The starting damage value for a player.
      */
-    private static final int START_DAMAGE = 5;
+    private static final int START_DAMAGE = 2;
 
     /**
-     * The size constant for a game entity.
+     * The size constant for a player.
      */
     public static final int SIZE = 50;
 
     /**
-     * The speed constant for a game entity.
+     * The speed constant for a player.
      */
     public static final int SPEED = 5;
 
     /**
-     * The x-coordinate of the game entity.
+     * The x-coordinate of the player.
      */
     private int x;
 
     /**
-     * The y-coordinate of the game entity.
+     * The y-coordinate of the player.
      */
     private int y;
 
     /**
-     * The health value of the game entity.
+     * The health value of the player.
      */
     private int health;
 
     /**
-     * The damage value of the game entity.
+     * The damage value of the player.
      */
     private int damage;
+
     /**
-     * The inventory list of items owned by the game character.
+     * The inventory list of items owned by player.
      */
     private List<Item> inventory;
 
     /**
      * A flag indicating if there is a collision
-     * on the left side of the game character.
+     * on the left side of the player.
      */
     private boolean leftCollision;
 
     /**
      * A flag indicating if there is a collision
-     * on the right side of the game character.
+     * on the right side of player.
      */
     private boolean rightCollision;
 
     /**
      * A flag indicating if there is a collision
-     * on the up side of the game character.
+     * on the up of the player.
      */
     private boolean upCollision;
 
     /**
      * A flag indicating if there is a collision
-     * on the down side of the game character.
+     * on the down of the player.
      */
     private boolean downCollision;
 
@@ -151,7 +158,7 @@ public class Player implements Serializable {
     private boolean doorCollision;
 
     /**
-     * The count of movements made by the game character.
+     * The count of movements made by the player.
      */
     private int moveCount;
 
@@ -164,16 +171,21 @@ public class Player implements Serializable {
      * The image icon associated with the game character.
      */
     private ImageIcon image;
+
+    /**
+     * A boolean flag indicating logging information about game.
+     */
     private boolean enableLogging;
 
     /**
-     * Constructs a Player object with the specified initial position.
+     * Constructs a Player with the initial position.
      *
-     * @param xLocal The x-coordinate of the player's position.
-     * @param yLocal The y-coordinate of the player's position.
+     * @param xLocal The x-coordinate of the player's position
+     * @param yLocal The y-coordinate of the player's position
+     * @param eLog   Flag indicate logging of game
      */
-    public Player(final int xLocal, final int yLocal, boolean enableLogging) {
-        setEnableLogging(enableLogging);
+    public Player(final int xLocal, final int yLocal, final boolean eLog) {
+        setEnableLogging(eLog);
         this.x = xLocal;
         this.y = yLocal;
         health = START_HEALTH;
@@ -186,12 +198,12 @@ public class Player implements Serializable {
      * Checks if the player collides with obstacles, doors, or the exit
      * and performs the corresponding actions.
      *
-     * @param game            The current game object.
-     * @param obstacles       The list of obstacles in the game.
-     * @param doors           The list of doors in the game.
-     * @param exit            The exit object in the game.
-     * @param playerNewBounds The bounds of object in the game.
-     * @return True if the player can move to the new position, false otherwise.
+     * @param game            The current game object
+     * @param obstacles       The list of obstacles in the game
+     * @param doors           The list of doors in the game
+     * @param exit            The exit in the game
+     * @param playerNewBounds The new bounds of player in the game
+     * @return True if the player can move to the new position, false otherwise
      */
     private boolean checkObstacle(final Game game,
                                   final List<Obstacle> obstacles,
@@ -205,19 +217,25 @@ public class Player implements Serializable {
         doorCollision = false;
         for (Obstacle obstacle : obstacles) {
             if (obstacle.getBounds().intersects(playerNewBounds)) {
-                log.log(Level.FINE, "Collision with obstacle");
+                if (enableLogging) {
+                    log.log(Level.FINE, "Collision with obstacle");
+                }
                 interactWithObstacles(obstacle);
                 return false;
             }
         }
         for (Door door : doors) {
             if (door.getBounds().intersects(playerNewBounds)) {
-                log.log(Level.FINE, "Collision with door");
+                if (enableLogging) {
+                    log.log(Level.FINE, "Collision with door");
+                }
                 return !interactWithDoor(door);
             }
         }
         if (exit.getBounds().intersects(playerNewBounds)) {
-            log.log(Level.FINE, "Player find exit");
+            if (enableLogging) {
+                log.log(Level.FINE, "Player find exit");
+            }
             List<Item> itList = new ArrayList<>();
             itList.add(new BasicCollar());
             saveItemsInFile(itList);
@@ -230,10 +248,10 @@ public class Player implements Serializable {
      * Checks if the player collides with items, trash cans, or enemies
      * and performs the corresponding actions.
      *
-     * @param game      The current game object.
-     * @param items     The list of items in the game.
-     * @param trashCans The list of trash cans in the game.
-     * @param enemies   The list of enemies in the game.
+     * @param game      The current game object
+     * @param items     The list of items in the game
+     * @param trashCans The list of trash cans in the game
+     * @param enemies   The list of enemies in the game
      */
     public void checkItemCollision(final Game game,
                                    final List<Item> items,
@@ -243,26 +261,22 @@ public class Player implements Serializable {
         for (Item item : items) {
             if (item instanceof Key key
                     && (key.getBounds().intersects(newBounds))) {
-                log.log(Level.FINE, "Player pick up key");
                 findKey(game, key);
                 return;
             }
             if (item instanceof Food food
                     && (food.getBounds().intersects(newBounds))) {
-                log.log(Level.FINE, "Player pick up food");
                 findFood(game, food);
                 return;
             }
             if (item instanceof SilverCollar silverCollar
                     && ((silverCollar).getBounds().intersects(newBounds))) {
-                log.log(Level.FINE, "Player pick up silver collar");
-                findSilverCollar(game, silverCollar);
+                findCollar(game, silverCollar);
                 return;
             }
             if (item instanceof GoldCollar goldCollar
                     && ((goldCollar).getBounds().intersects(newBounds))) {
-                log.log(Level.FINE, "Player pick up gold collar");
-                findGoldCollar(game, goldCollar);
+                findCollar(game, goldCollar);
                 return;
             }
         }
@@ -271,34 +285,47 @@ public class Player implements Serializable {
     }
 
     /**
-     * Checks for collision between the player
-     * and trash cans and performs the corresponding actions.
+     * Checks for collision between the player and trashcans.
      *
-     * @param trashCans The list of trash cans in the game.
+     * @param trashCans The list of trashcans in the game
      */
     public void checkTrashCanCollision(final List<TrashCan> trashCans) {
         for (TrashCan trashCan : trashCans) {
             if (trashCan.getBounds().intersects(newBounds)) {
-                log.log(Level.FINE, "Player find in trashcan");
-                for (Item item : trashCan.getContent()) {
-                    log.log(Level.FINE, "Add new item in inventory");
-                    inventory.add(item);
-                    if (item instanceof Collar collar) {
-                        wear(collar);
-                    }
-                    if (item instanceof Food food) {
-                        eat(food);
-                    }
+                if (enableLogging) {
+                    log.log(Level.FINE, "Player find in trashcan");
                 }
-                log.log(Level.FINE, "Clear trashcan");
+                findInTrashcan(trashCan.getContent());
+                if (enableLogging) {
+                    log.log(Level.FINE, "Clear trashcan");
+                }
                 trashCan.setContent(new ArrayList<>());
             }
         }
     }
 
     /**
-     * Checks if the player collides with an enemy
-     * and performs the corresponding actions.
+     * Interact with trashcan and find item in it.
+     *
+     * @param content List of item in trashcan
+     */
+    public void findInTrashcan(final List<Item> content) {
+        for (Item item : content) {
+            if (enableLogging) {
+                log.log(Level.FINE, "Add new item in inventory");
+            }
+            inventory.add(item);
+            if (item instanceof Collar collar) {
+                wear(collar);
+            }
+            if (item instanceof Food food) {
+                eat(food);
+            }
+        }
+    }
+
+    /**
+     * Checks if the player collides with an enemy.
      *
      * @param game    The current game object.
      * @param enemies The list of enemies in the game.
@@ -307,21 +334,37 @@ public class Player implements Serializable {
                                     final List<Enemy> enemies) {
         for (Enemy enemy : enemies) {
             if (enemy.getBounds().intersects(newBounds)) {
-                log.log(Level.FINE, "Player interact with enemy");
+                if (enableLogging) {
+                    log.log(Level.FINE, "Player interact with enemy");
+                }
                 enemy.attack(this);
-                if (!enemy.isAlive()) {
-                    log.log(Level.FINE, "Remove enemy from map");
-                    List<Enemy> enemyList = game.getEnemies();
-                    enemyList.remove(enemy);
-                    game.setEnemies(enemyList);
-                }
-                if (health < 1) {
-                    log.log(Level.FINE, "Player die, game was finished");
-                    saveItemsInFile(inventory);
-                    game.loseGame();
-                }
+                postBattleReview(game, enemy);
                 return;
             }
+        }
+    }
+
+    /**
+     * After interaction with enemy check health of player and enemy.
+     *
+     * @param game  The current game object.
+     * @param enemy The enemy we interact with
+     */
+    public void postBattleReview(final Game game, final Enemy enemy) {
+        if (!enemy.isAlive()) {
+            if (enableLogging) {
+                log.log(Level.FINE, "Remove enemy from map");
+            }
+            List<Enemy> enemyList = game.getEnemies();
+            enemyList.remove(enemy);
+            game.setEnemies(enemyList);
+        }
+        if (health < 1) {
+            if (enableLogging) {
+                log.log(Level.FINE, "Player die, game was finished");
+            }
+            saveItemsInFile(inventory);
+            game.loseGame();
         }
     }
 
@@ -340,11 +383,15 @@ public class Player implements Serializable {
         if (checkObstacle(game, obstacles, doors, exit,
                 new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             x -= SPEED;
-            log.log(Level.FINEST, "Change positioning of the player left");
+            if (enableLogging) {
+                log.log(Level.FINEST, "Change positioning of the player left");
+            }
         } else {
             if (!leftCollision && !doorCollision) {
                 x -= SPEED;
-                log.log(Level.FINEST, "Change positioning of the player left");
+                if (enableLogging) {
+                    log.log(Level.FINEST, "Change positioning left");
+                }
             }
         }
     }
@@ -366,11 +413,15 @@ public class Player implements Serializable {
         if (checkObstacle(game, obstacles, doors, exit,
                 new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             x += SPEED;
-            log.log(Level.FINEST, "Change positioning of the player right");
+            if (enableLogging) {
+                log.log(Level.FINEST, "Change positioning of the player right");
+            }
         } else {
             if (!rightCollision) {
                 x += SPEED;
-                log.log(Level.FINEST, "Change positioning of the player right");
+                if (enableLogging) {
+                    log.log(Level.FINEST, "Change positioning right");
+                }
             }
         }
 
@@ -393,11 +444,15 @@ public class Player implements Serializable {
         if (checkObstacle(game, obstacles, doors, exit,
                 new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             y -= SPEED;
-            log.log(Level.FINEST, "Change positioning of the player up");
+            if (enableLogging) {
+                log.log(Level.FINEST, "Change positioning of the player up");
+            }
         } else {
             if (!upCollision && !doorCollision) {
                 y -= SPEED;
-                log.log(Level.FINEST, "Change positioning of the player up");
+                if (enableLogging) {
+                    log.log(Level.FINEST, "Change positioning up");
+                }
             }
         }
     }
@@ -419,11 +474,15 @@ public class Player implements Serializable {
         if (checkObstacle(game, obstacles, doors, exit,
                 new Rectangle(x - SPEED, y, SIZE, SIZE))) {
             y += SPEED;
-            log.log(Level.FINEST, "Change positioning of the player down");
+            if (enableLogging) {
+                log.log(Level.FINEST, "Change positioning of the player down");
+            }
         } else {
             if (!downCollision) {
                 y += SPEED;
-                log.log(Level.FINEST, "Change positioning of the player down");
+                if (enableLogging) {
+                    log.log(Level.FINEST, "Change positioning down");
+                }
             }
         }
 
@@ -629,9 +688,12 @@ public class Player implements Serializable {
      * @param key  The key item to be found.
      */
     public void findKey(final Game game, final Key key) {
+        if (enableLogging) {
+            log.log(Level.FINE, "Player pick up key");
+        }
         inventory.add(key);
         if (enableLogging) {
-            log.log(Level.FINER, "Add key in inventory and remove key from map");
+            log.log(Level.FINER, "Add key in inventory");
         }
         List<Item> itemList = game.getItems();
         itemList.remove(key);
@@ -645,6 +707,9 @@ public class Player implements Serializable {
      * @param food The food item to be found.
      */
     public void findFood(final Game game, final Food food) {
+        if (enableLogging) {
+            log.log(Level.FINE, "Player pick up food");
+        }
         inventory.add(food);
         eat(food);
         if (enableLogging) {
@@ -658,37 +723,24 @@ public class Player implements Serializable {
     /**
      * Finds a silver collar item and adds it to the player's inventory.
      *
-     * @param game         The current game object.
-     * @param silverCollar The silver collar item to be found.
+     * @param game   The current game object.
+     * @param collar The silver collar item to be found.
      */
-    public void findSilverCollar(final Game game,
-                                 final SilverCollar silverCollar) {
-        inventory.add(silverCollar);
-        wear(silverCollar);
+    public void findCollar(final Game game,
+                           final Collar collar) {
+        if (enableLogging) {
+            log.log(Level.FINE, "Player pick up collar");
+        }
+        inventory.add(collar);
+        wear(collar);
         if (enableLogging) {
             log.log(Level.FINER, "Wear collar and remove from map");
         }
         List<Item> itemList = game.getItems();
-        itemList.remove(silverCollar);
+        itemList.remove(collar);
         game.setItems(itemList);
     }
 
-    /**
-     * Finds a gold collar item and adds it to the player's inventory.
-     *
-     * @param game       The current game object.
-     * @param goldCollar The gold collar item to be found.
-     */
-    public void findGoldCollar(final Game game, final GoldCollar goldCollar) {
-        inventory.add(goldCollar);
-        wear(goldCollar);
-        if (enableLogging) {
-            log.log(Level.FINER, "Wear collar and remove from map");
-        }
-        List<Item> itemList = game.getItems();
-        itemList.remove(goldCollar);
-        game.setItems(itemList);
-    }
 
     /**
      * Interacts with a door.

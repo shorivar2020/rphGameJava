@@ -157,10 +157,14 @@ public class Game extends JPanel implements Runnable, KeyListener {
 
     /**
      * Set screen settings, add player and obstacles.
-     * @param log flag indicate logging of game
+     *
+     * @param eLog flag indicate logging of game
      */
-    public Game(final boolean log) {
-        setEnableLogging(log);
+    public Game(final boolean eLog) {
+        setEnableLogging(eLog);
+        if (enableLogging) {
+            log.log(Level.INFO, "Starting the Cat Adventure game");
+        }
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         addKeyListener(this);
@@ -211,6 +215,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    /**
+     * Starting the main thread of the game.
+     */
     @Override
     public void run() {
         while (running) {
@@ -272,6 +279,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    /**
+     * Drawing objects on the screen.
+     */
     @Override
     public void paintComponent(final Graphics g) {
         super.paintComponent(g);
@@ -315,6 +325,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         // Not implemented
     }
 
+    /**
+     * Moving or interacting with the player interface by pressing keys.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void keyPressed(final KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -334,6 +349,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
         }
     }
 
+    /**
+     * Moving or interacting with the player interface by releasing keys.
+     *
+     * @param e the event to be processed
+     */
     @Override
     public void keyReleased(final KeyEvent e) {
         switch (e.getKeyCode()) {
