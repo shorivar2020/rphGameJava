@@ -1,10 +1,3 @@
-/**
- * Objects, that interact with player
- *
- * @version 1.0
- * @see Item
- * @since 1.0
- */
 package org.game.entity.item;
 
 import lombok.Getter;

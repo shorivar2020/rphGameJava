@@ -1,10 +1,3 @@
-/**
- * Package of game with item type of collar.
- *
- * @version 1.0
- * @see Collar
- * @since 1.0
- */
 package org.game.entity.item.collar;
 
 import lombok.Getter;

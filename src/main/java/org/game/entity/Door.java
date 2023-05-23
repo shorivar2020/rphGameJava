@@ -54,14 +54,15 @@ public class Door extends Entity implements Serializable {
      * The image icon representing the door.
      */
     private ImageIcon image;
+
     /**
      * Constructs a Door object with the specified position,
      * door number, and orientation.
      *
-     * @param x            The x-coordinate of the door's position.
-     * @param y            The y-coordinate of the door's position.
-     * @param dNum         The number of the door.
-     * @param isVertical   Flag indicating if the door is vertical/horizontal.
+     * @param x          The x-coordinate of the door's position.
+     * @param y          The y-coordinate of the door's position.
+     * @param dNum       The number of the door.
+     * @param isVertical Flag indicating if the door is vertical/horizontal.
      */
     public Door(final int x, final int y,
                 final int dNum, final boolean isVertical) {
