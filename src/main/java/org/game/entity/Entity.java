@@ -9,7 +9,7 @@ import java.awt.Rectangle;
 
 /**
  * The Entity class represents a game entity.
- * It provides common properties and behaviors for entities in the game.
+ * It provides movement for entities in the game.
  */
 @Log
 @Getter
@@ -39,14 +39,14 @@ public abstract class Entity {
     /**
      * Draws the entity on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public abstract void draw(Graphics2D g2d);
 
     /**
      * Retrieves the bounding rectangle of the entity.
      *
-     * @return The bounding rectangle.
+     * @return The bounding rectangle
      */
     public abstract Rectangle getBounds();
 }

@@ -59,10 +59,10 @@ public class Door extends Entity implements Serializable {
      * Constructs a Door object with the specified position,
      * door number, and orientation.
      *
-     * @param x          The x-coordinate of the door's position.
-     * @param y          The y-coordinate of the door's position.
-     * @param dNum       The number of the door.
-     * @param isVertical Flag indicating if the door is vertical/horizontal.
+     * @param x          The x-coordinate of the door's position
+     * @param y          The y-coordinate of the door's position
+     * @param dNum       The number of the door
+     * @param isVertical Flag indicating if the door is vertical/horizontal
      */
     public Door(final int x, final int y,
                 final int dNum, final boolean isVertical) {
@@ -84,7 +84,7 @@ public class Door extends Entity implements Serializable {
     /**
      * Sets the image of the door to a horizontal door image.
      *
-     * @param e The Door object.
+     * @param e The Door object
      */
     public void setImage(final Door e) {
         URL img = Objects.
@@ -95,7 +95,7 @@ public class Door extends Entity implements Serializable {
     /**
      * Sets the image of the door to a vertical door image.
      *
-     * @param e The Door object.
+     * @param e The Door object
      */
     public void setImageVertical(final Door e) {
         URL img = Objects.
@@ -107,7 +107,7 @@ public class Door extends Entity implements Serializable {
      * Unlocks the door with the specified key.
      * If the key matches the door's number, the door is unlocked.
      *
-     * @param key The key used to unlock the door.
+     * @param key The key used to unlock the door
      */
     public void unlock(final Key key) {
         if (key.isRightDoor(doorNumber)) {
@@ -118,7 +118,7 @@ public class Door extends Entity implements Serializable {
     /**
      * Draws the door on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
@@ -127,7 +127,7 @@ public class Door extends Entity implements Serializable {
     /**
      * Retrieves the bounding rectangle of the door.
      *
-     * @return The bounding rectangle.
+     * @return The bounding rectangle
      */
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());

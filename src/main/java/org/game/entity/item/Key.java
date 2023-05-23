@@ -19,6 +19,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Key extends Item implements Serializable {
+
     /**
      * The file name for the key texture.
      */

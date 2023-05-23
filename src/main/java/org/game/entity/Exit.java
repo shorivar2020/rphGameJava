@@ -37,8 +37,8 @@ public class Exit extends Entity implements Serializable {
     /**
      * Constructs a new Exit object with the specified coordinates.
      *
-     * @param x The x-coordinate of the exit.
-     * @param y The y-coordinate of the exit.
+     * @param x The x-coordinate of the exit
+     * @param y The y-coordinate of the exit
      */
     public Exit(final int x, final int y) {
         this.setX(x);
@@ -51,7 +51,7 @@ public class Exit extends Entity implements Serializable {
     /**
      * Sets the image for the exit.
      *
-     * @param e The Exit object to set the image for.
+     * @param e The Exit object to set the image for
      */
     public void setImage(final Exit e) {
         URL img = Objects.
@@ -62,7 +62,7 @@ public class Exit extends Entity implements Serializable {
     /**
      * Draws the exit on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
@@ -71,7 +71,7 @@ public class Exit extends Entity implements Serializable {
     /**
      * Retrieves the bounding rectangle of the exit.
      *
-     * @return The bounding rectangle.
+     * @return The bounding rectangle
      */
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());

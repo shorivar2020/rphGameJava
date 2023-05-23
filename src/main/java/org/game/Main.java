@@ -12,6 +12,7 @@ import javax.swing.WindowConstants;
 
 
 public class Main {
+
     /**
      * The entry point of the program.
      * Creates an instance of the game class,

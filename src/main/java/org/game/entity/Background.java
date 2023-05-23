@@ -54,8 +54,8 @@ public class Background extends Entity implements Serializable {
     /**
      * Constructs a Background object with the specified position.
      *
-     * @param x The x-coordinate of the background's position.
-     * @param y The y-coordinate of the background's position.
+     * @param x The x-coordinate of the background's position
+     * @param y The y-coordinate of the background's position
      */
     public Background(final int x, final int y) {
         this.setX(x);
@@ -65,11 +65,11 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the image of the background based on the provided flags.
      *
-     * @param isGrass   Flag indicating if the background should be grass.
-     * @param isAsphalt Flag indicating if the background should be asphalt.
-     * @param isFloor   Flag indicating if the background should be a floor.
-     * @param isPlate   Flag indicating if the background should be a plate.
-     * @param isCushion Flag indicating if the background should be a cushion.
+     * @param isGrass   Flag indicating if the background should be grass
+     * @param isAsphalt Flag indicating if the background should be asphalt
+     * @param isFloor   Flag indicating if the background should be a floor
+     * @param isPlate   Flag indicating if the background should be a plate
+     * @param isCushion Flag indicating if the background should be a cushion
      */
     public void setImage(final boolean isGrass, final boolean isAsphalt,
                          final boolean isFloor, final boolean isPlate,
@@ -90,7 +90,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the background image to an asphalt image.
      *
-     * @param o The Background object.
+     * @param o The Background object
      */
     public void setImageAsphalt(final Background o) {
         URL img = Objects.
@@ -101,7 +101,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the background image to a grass image.
      *
-     * @param o The Background object.
+     * @param o The Background object
      */
     public void setImageGrass(final Background o) {
         URL img = Objects.
@@ -112,7 +112,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the background image to a floor image.
      *
-     * @param o The Background object.
+     * @param o The Background object
      */
     public void setImageFloor(final Background o) {
         URL img = Objects.
@@ -123,7 +123,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the background image to a plate image.
      *
-     * @param o The Background object.
+     * @param o The Background object
      */
     public void setImagePlate(final Background o) {
         URL img = Objects.
@@ -134,7 +134,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Sets the background image to a cushion image.
      *
-     * @param o The Background object.
+     * @param o The Background object
      */
     public void setImageCushion(final Background o) {
         URL img = Objects.
@@ -145,7 +145,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Draws the background on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
@@ -154,7 +154,7 @@ public class Background extends Entity implements Serializable {
     /**
      * Retrieves the bounding rectangle of the background.
      *
-     * @return The bounding rectangle.
+     * @return The bounding rectangle
      */
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());

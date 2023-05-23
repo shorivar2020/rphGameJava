@@ -13,6 +13,7 @@ import java.util.Objects;
  */
 @Log
 public class GameWonView implements Serializable {
+
     /**
      * The file name of the game win view image.
      */

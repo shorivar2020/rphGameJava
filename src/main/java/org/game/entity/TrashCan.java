@@ -45,9 +45,9 @@ public class TrashCan extends Entity implements Serializable {
      * Constructs a new TrashCan object
      * with the specified coordinates and content.
      *
-     * @param x       The x-coordinate of the trash can.
-     * @param y       The y-coordinate of the trash can.
-     * @param c       The list of items in the trash can.
+     * @param x The x-coordinate of the trash can
+     * @param y The y-coordinate of the trash can
+     * @param c The list of items in the trash can
      */
     public TrashCan(final int x, final int y, final List<Item> c) {
         setX(x);
@@ -61,7 +61,7 @@ public class TrashCan extends Entity implements Serializable {
     /**
      * Sets the image for the trash can.
      *
-     * @param t The TrashCan object to set the image for.
+     * @param t The TrashCan object to set the image for
      */
     public void setImage(final TrashCan t) {
         URL img = Objects.
@@ -72,7 +72,7 @@ public class TrashCan extends Entity implements Serializable {
     /**
      * Draws the trash can on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);

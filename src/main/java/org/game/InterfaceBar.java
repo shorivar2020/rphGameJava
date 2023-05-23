@@ -21,6 +21,7 @@ import java.util.Objects;
 @Setter
 @Getter
 public class InterfaceBar {
+
     /**
      * The size of a block of objects on map.
      */
