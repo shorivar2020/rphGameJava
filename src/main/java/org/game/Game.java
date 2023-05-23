@@ -20,6 +20,7 @@ import java.awt.event.KeyListener;
 import java.util.List;
 import java.util.logging.Level;
 
+
 /**
  * The main class of game management.
  */
@@ -149,20 +150,26 @@ public class Game extends JPanel implements Runnable, KeyListener {
      * A boolean flag indicating whether the inventory is currently being shown.
      */
     private boolean showingInventory;
+    /**
+     * A boolean flag indicating logging information about game.
+     */
+    private boolean enableLogging;
 
     /**
      * Set screen settings, add player and obstacles.
+     * @param log flag indicate logging of game
      */
-    public Game() {
+    public Game(final boolean log) {
+        setEnableLogging(log);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setFocusable(true);
         addKeyListener(this);
 
-        player = new Player(START_PLAYER_X, START_PLAYER_Y);
+        player = new Player(START_PLAYER_X, START_PLAYER_Y, enableLogging);
 
         // Map management
         MapLoader mapLoader = new MapLoader();
-        mapLoader.getMapFromFile();
+        mapLoader.getMapFromFile(enableLogging);
         backgrounds = mapLoader.getBackgrounds();
         obstacles = mapLoader.getObstacles();
         doors = mapLoader.getDoors();
@@ -212,7 +219,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
             try {
                 Thread.sleep(SLEEP_TIME);
             } catch (InterruptedException e) {
-                log.log(Level.WARNING, "Thread was interrupted");
+                if (enableLogging) {
+                    log.log(Level.WARNING, "Thread was interrupted");
+                }
                 Thread.currentThread().interrupt();
             }
         }
@@ -248,7 +257,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
      */
     public void winGame() {
         gameFinishWin = true;
-        log.log(Level.FINE, "Player won the game");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player won the game");
+        }
     }
 
     /**
@@ -256,7 +267,9 @@ public class Game extends JPanel implements Runnable, KeyListener {
      */
     public void loseGame() {
         gameFinishLose = true;
-        log.log(Level.FINE, "Player lost the game");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player lost the game");
+        }
     }
 
     @Override
@@ -313,7 +326,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
                 showingInventory = !showingInventory;
                 repaint();
             }
-            default -> log.log(Level.INFO, "Player pressed wrong key");
+            default -> {
+                if (enableLogging) {
+                    log.log(Level.INFO, "Player pressed wrong key");
+                }
+            }
         }
     }
 
@@ -324,7 +341,11 @@ public class Game extends JPanel implements Runnable, KeyListener {
             case KeyEvent.VK_RIGHT, KeyEvent.VK_D -> rightPressed = false;
             case KeyEvent.VK_UP, KeyEvent.VK_W -> upPressed = false;
             case KeyEvent.VK_DOWN, KeyEvent.VK_S -> downPressed = false;
-            default -> log.log(Level.INFO, "Player released wrong key");
+            default -> {
+                if (enableLogging) {
+                    log.log(Level.INFO, "Player released wrong key");
+                }
+            }
         }
     }
 }

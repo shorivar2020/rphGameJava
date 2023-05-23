@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 
+
 /**
  * The class loads and parses the map and its objects from a file.
  */
@@ -125,7 +126,7 @@ public class MapLoader {
      * @return The 2D char array representation of the map.
      * @throws FileNotFoundException if the map file is not found.
      */
-    public static char[][] loadMap(final String filename)
+    public static char[][] loadMap(final String filename, boolean enableLogging)
             throws IOException {
         char[][] map = new char[MAP_WIDTH][MAP_HEIGHT];
         File file = new File(filename);
@@ -150,7 +151,11 @@ public class MapLoader {
                     case 'g' -> map[col][row] = 'g'; // grass
                     case 'f' -> map[col][row] = 'f'; // floor
                     case 'w' -> map[col][row] = 'w';
-                    default -> log.log(Level.WARNING, "Undefined part of map");
+                    default -> {
+                        if (enableLogging) {
+                            log.log(Level.WARNING, "Undefined part of map");
+                        }
+                    }
                 }
             }
             row++;
@@ -162,24 +167,30 @@ public class MapLoader {
     /**
      * Loads the map and its objects from the map file.
      */
-    public void getMapFromFile() {
+    public void getMapFromFile(boolean enableLogging) {
         char[][] map = new char[MAP_WIDTH][MAP_HEIGHT];
         try {
-            map = MapLoader.loadMap(FILE_MAP_NAME);
-            log.log(Level.FINE, "Map file was loaded successfully");
+            map = MapLoader.loadMap(FILE_MAP_NAME, enableLogging);
+            if (enableLogging) {
+                log.log(Level.FINE, "Map file was loaded successfully");
+            }
         } catch (IOException e) {
-            log.log(Level.SEVERE, "Map file not found", e);
+            if (enableLogging) {
+                log.log(Level.SEVERE, "Map file not found", e);
+            }
         }
         for (int i = 0; i < MAP_HEIGHT; i++) {
             for (int j = 0; j < MAP_WIDTH; j++) {
-                mapParser(map[j][i]);
+                mapParser(map[j][i], enableLogging);
                 xLocal += BLOCK_SIZE;
             }
             xLocal = BLOCK_START;
             yLocal += BLOCK_SIZE;
         }
-        log.log(Level.FINE, "Map was parsed successfully");
-        keyDistributionAlgorithm();
+        if (enableLogging) {
+            log.log(Level.FINE, "Map was parsed successfully");
+        }
+        keyDistributionAlgorithm(enableLogging);
     }
 
     /**
@@ -187,7 +198,7 @@ public class MapLoader {
      *
      * @param parserChar The character to be parsed.
      */
-    public void mapParser(final char parserChar) {
+    public void mapParser(final char parserChar, boolean enableLogging) {
         switch (parserChar) {
             case 0 -> {
                 b = new Background(xLocal, yLocal);
@@ -205,8 +216,7 @@ public class MapLoader {
                 backgrounds.add(b);
             }
             case 1 -> obstacles.add(new Obstacle(xLocal, yLocal, true, false));
-            case 'w' ->
-                    obstacles.add(new Obstacle(xLocal, yLocal, false, true));
+            case 'w' -> obstacles.add(new Obstacle(xLocal, yLocal, false, true));
             case 2 -> {
                 List<Item> c = new ArrayList<>();
                 b = new Background(xLocal, yLocal);
@@ -261,7 +271,11 @@ public class MapLoader {
                 backgrounds.add(b);
                 items.add(new Food(xLocal, yLocal));
             }
-            default -> log.log(Level.WARNING, "Undefined part of the map");
+            default -> {
+                if (enableLogging) {
+                    log.log(Level.WARNING, "Undefined part of the map");
+                }
+            }
         }
     }
 
@@ -280,7 +294,7 @@ public class MapLoader {
     /**
      * Distributes keys to doors based on a key distribution algorithm.
      */
-    private void keyDistributionAlgorithm() {
+    private void keyDistributionAlgorithm(boolean enableLogging) {
         if (doorCount <= trashCount) {
             for (int i = 0; i < doorCount; i++) {
                 doors.get(i).setDoorNumber(i);
@@ -289,9 +303,13 @@ public class MapLoader {
                 itemList.add(key);
                 trashCans.get(i).setContent(itemList);
             }
-            log.log(Level.FINE, "Keys were distributed successfully");
+            if (enableLogging) {
+                log.log(Level.FINE, "Keys were distributed successfully");
+            }
         } else {
-            log.log(Level.WARNING, "Too few trash cans for key distribution");
+            if (enableLogging) {
+                log.log(Level.WARNING, "Too few trash cans for key distribution");
+            }
         }
     }
 }

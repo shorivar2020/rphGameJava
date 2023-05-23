@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 
+
 /**
  * The player class is controlled through the keyboards by the user.
  * Moves around the map. Interacts with objects.
@@ -163,6 +164,7 @@ public class Player implements Serializable {
      * The image icon associated with the game character.
      */
     private ImageIcon image;
+    private boolean enableLogging;
 
     /**
      * Constructs a Player object with the specified initial position.
@@ -170,7 +172,8 @@ public class Player implements Serializable {
      * @param xLocal The x-coordinate of the player's position.
      * @param yLocal The y-coordinate of the player's position.
      */
-    public Player(final int xLocal, final int yLocal) {
+    public Player(final int xLocal, final int yLocal, boolean enableLogging) {
+        setEnableLogging(enableLogging);
         this.x = xLocal;
         this.y = yLocal;
         health = START_HEALTH;
@@ -183,10 +186,10 @@ public class Player implements Serializable {
      * Checks if the player collides with obstacles, doors, or the exit
      * and performs the corresponding actions.
      *
-     * @param game      The current game object.
-     * @param obstacles The list of obstacles in the game.
-     * @param doors     The list of doors in the game.
-     * @param exit      The exit object in the game.
+     * @param game            The current game object.
+     * @param obstacles       The list of obstacles in the game.
+     * @param doors           The list of doors in the game.
+     * @param exit            The exit object in the game.
      * @param playerNewBounds The bounds of object in the game.
      * @return True if the player can move to the new position, false otherwise.
      */
@@ -445,12 +448,16 @@ public class Player implements Serializable {
             URL img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_RIGHT_1));
             e.image = new ImageIcon(img);
-            log.log(Level.FINER, "Set image of player №1 right");
+            if (enableLogging) {
+                log.log(Level.FINER, "Set image of player №1 right");
+            }
         } else {
             URL img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_RIGHT_2));
             e.image = new ImageIcon(img);
-            log.log(Level.FINER, "Set image of player №2 right");
+            if (enableLogging) {
+                log.log(Level.FINER, "Set image of player №2 right");
+            }
         }
         moveCount++;
     }
@@ -464,7 +471,9 @@ public class Player implements Serializable {
         URL img = Objects.
                 requireNonNull(getClass().getResource(FILE_NAME_UP));
         e.image = new ImageIcon(img);
-        log.log(Level.FINER, "Set image of player up");
+        if (enableLogging) {
+            log.log(Level.FINER, "Set image of player up");
+        }
     }
 
     /**
@@ -476,7 +485,9 @@ public class Player implements Serializable {
         URL img = Objects.
                 requireNonNull(getClass().getResource(FILE_NAME_DOWN));
         e.image = new ImageIcon(img);
-        log.log(Level.FINER, "Set image of player down");
+        if (enableLogging) {
+            log.log(Level.FINER, "Set image of player down");
+        }
     }
 
     /**
@@ -489,12 +500,16 @@ public class Player implements Serializable {
             URL img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_LEFT_1));
             e.image = new ImageIcon(img);
-            log.log(Level.FINER, "Set image of player №1 left");
+            if (enableLogging) {
+                log.log(Level.FINER, "Set image of player №1 left");
+            }
         } else {
             URL img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_LEFT_2));
             e.image = new ImageIcon(img);
-            log.log(Level.FINER, "Set image of player №2 left");
+            if (enableLogging) {
+                log.log(Level.FINER, "Set image of player №2 left");
+            }
         }
         moveCount++;
     }
@@ -516,7 +531,9 @@ public class Player implements Serializable {
      * @param collar The collar item to be worn.
      */
     void wear(final Collar collar) {
-        log.log(Level.FINE, "Player use collar and add health, damage");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player use collar and add health, damage");
+        }
         health += collar.getHealth();
         damage += collar.getDamage();
     }
@@ -527,7 +544,9 @@ public class Player implements Serializable {
      * @param food The food item to be eaten.
      */
     void eat(final Food food) {
-        log.log(Level.FINE, "Player use food and add health");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player use food and add health");
+        }
         health += food.getFoodValue();
     }
 
@@ -535,10 +554,12 @@ public class Player implements Serializable {
      * Takes damage from an enemy and attacks the enemy in return.
      *
      * @param enemyDamage The amount of damage to be taken.
-     * @param enemy  The enemy that is attacking the player.
+     * @param enemy       The enemy that is attacking the player.
      */
     public void takeDamage(final int enemyDamage, final Enemy enemy) {
-        log.log(Level.FINE, "Player take damage, less health");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player take damage, less health");
+        }
         health = health - enemyDamage;
         attackEnemy(enemy);
     }
@@ -549,7 +570,9 @@ public class Player implements Serializable {
      * @param enemy The enemy to be attacked.
      */
     public void attackEnemy(final Enemy enemy) {
-        log.log(Level.FINE, "Player attack enemy, use random for damage");
+        if (enableLogging) {
+            log.log(Level.FINE, "Player attack enemy, use random for damage");
+        }
         enemy.takeDamage(damage);
     }
 
@@ -566,9 +589,13 @@ public class Player implements Serializable {
             in = new ObjectInputStream(fileIn);
             loadInv = (ArrayList<Item>) in.readObject();
             in.close();
-            log.log(Level.FINE, "Take items from file");
+            if (enableLogging) {
+                log.log(Level.FINE, "Take items from file");
+            }
         } catch (IOException | ClassNotFoundException e) {
-            log.log(Level.WARNING, "Dont taken inventory from file");
+            if (enableLogging) {
+                log.log(Level.WARNING, "Dont taken inventory from file");
+            }
         }
         return loadInv;
     }
@@ -587,7 +614,9 @@ public class Player implements Serializable {
                 out.writeObject(itemList);
                 out.close();
             }
-            log.log(Level.FINE, "Items save in file");
+            if (enableLogging) {
+                log.log(Level.FINE, "Items save in file");
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -601,7 +630,9 @@ public class Player implements Serializable {
      */
     public void findKey(final Game game, final Key key) {
         inventory.add(key);
-        log.log(Level.FINER, "Add key in inventory and remove key from map");
+        if (enableLogging) {
+            log.log(Level.FINER, "Add key in inventory and remove key from map");
+        }
         List<Item> itemList = game.getItems();
         itemList.remove(key);
         game.setItems(itemList);
@@ -616,7 +647,9 @@ public class Player implements Serializable {
     public void findFood(final Game game, final Food food) {
         inventory.add(food);
         eat(food);
-        log.log(Level.FINER, "Eat food and remove food from map");
+        if (enableLogging) {
+            log.log(Level.FINER, "Eat food and remove food from map");
+        }
         List<Item> itemList = game.getItems();
         itemList.remove(food);
         game.setItems(itemList);
@@ -632,7 +665,9 @@ public class Player implements Serializable {
                                  final SilverCollar silverCollar) {
         inventory.add(silverCollar);
         wear(silverCollar);
-        log.log(Level.FINER, "Wear collar and remove from map");
+        if (enableLogging) {
+            log.log(Level.FINER, "Wear collar and remove from map");
+        }
         List<Item> itemList = game.getItems();
         itemList.remove(silverCollar);
         game.setItems(itemList);
@@ -647,7 +682,9 @@ public class Player implements Serializable {
     public void findGoldCollar(final Game game, final GoldCollar goldCollar) {
         inventory.add(goldCollar);
         wear(goldCollar);
-        log.log(Level.FINER, "Wear collar and remove from map");
+        if (enableLogging) {
+            log.log(Level.FINER, "Wear collar and remove from map");
+        }
         List<Item> itemList = game.getItems();
         itemList.remove(goldCollar);
         game.setItems(itemList);
@@ -665,14 +702,18 @@ public class Player implements Serializable {
             if (item instanceof Key key) {
                 door.unlock(key);
                 if (!door.isLocked()) {
-                    log.log(Level.FINER, "Door open");
+                    if (enableLogging) {
+                        log.log(Level.FINER, "Door open");
+                    }
                     return false;
                 }
             }
         }
         if (door.isLocked()) {
             doorCollision = true;
-            log.log(Level.FINER, "Door not open");
+            if (enableLogging) {
+                log.log(Level.FINER, "Door not open");
+            }
             return true;
         }
         return false;

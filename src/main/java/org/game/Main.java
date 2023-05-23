@@ -1,8 +1,14 @@
 /**
- * Main package of game
+ * This is a main class of the game.
+ *
+ * @version 1.0
+ * @author shorivar
+ * @see org.game
+ * @since 1.0
  */
 package org.game;
 
+import lombok.Getter;
 import lombok.extern.java.Log;
 
 import javax.swing.JFrame;
@@ -10,17 +16,24 @@ import javax.swing.WindowConstants;
 import java.util.logging.Level;
 
 @Log
+@Getter
 public class Main {
     /**
      * The entry point of the program.
      * Creates an instance of the game class,
      * sets up the game window,
      * and starts the game.
-     * @param args The command-line arguments (not used).
      */
     public static void main(final String[] args) {
-        log.log(Level.INFO, "Starting the Cat Adventure game");
-        Game game = new Game();
+        boolean enableLogging = args.length > 0 && args[0].equalsIgnoreCase("enableLogging");
+        if (args.length > 0 && args[0].equalsIgnoreCase("true")) {
+            enableLogging = true;
+        }
+
+        if (enableLogging) {
+            log.log(Level.INFO, "Starting the Cat Adventure game");
+        }
+        Game game = new Game(enableLogging);
         JFrame frame = new JFrame("Cat Adventure");
         frame.add(game);
         frame.pack();
@@ -29,7 +42,9 @@ public class Main {
         frame.setVisible(true);
 
         game.start();
-        log.log(Level.INFO, "Game started");
+        if (enableLogging) {
+            log.log(Level.INFO, "Game started");
+        }
     }
 
 }
