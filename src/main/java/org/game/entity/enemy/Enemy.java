@@ -1,33 +1,43 @@
+/**
+ * This is a class for enemies
+ *
+ * @version 1.0
+ * @author shorivar
+ * @see org.game.entity.enemy
+ * @since 1.0
+ */
 package org.game.entity.enemy;
-
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.java.Log;
-import org.game.entity.Entity;
-import org.game.Player;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.java.Log;
+import org.game.Player;
+import org.game.entity.Entity;
+
+
 /**
- * The Enemy class represents an abstract enemy entity in the game.
+ * The Enemy class is abstract for classes
+ * represents an enemy entity in the game.
  */
 @Log
 @Getter
 @Setter
 public abstract class Enemy extends Entity implements Serializable {
     /**
-     Represents a character's health.
+     * Represents an enemy's health.
      */
     private int health;
     /**
-     Represents a character's damage.
+     * Represents an enemy's damage.
      */
     private int damage;
 
     /**
-     * Takes the specified amount of damage.
+     * Takes the amount of damage from player.
      *
      * @param playerDamage the amount of damage to take
      */
@@ -48,7 +58,7 @@ public abstract class Enemy extends Entity implements Serializable {
     public abstract void draw(Graphics2D g2d);
 
     /**
-     * Attacks the specified player.
+     * Attacks player.
      *
      * @param player the player to attack
      */

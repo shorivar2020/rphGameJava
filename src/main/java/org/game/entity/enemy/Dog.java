@@ -1,16 +1,25 @@
+/**
+ * This is a class for enemies type dog.
+ *
+ * @version 1.0
+ * @author shorivar
+ * @see org.game.entity.enemy
+ * @since 1.0
+ */
 package org.game.entity.enemy;
+
+import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.Objects;
+import javax.swing.ImageIcon;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.java.Log;
 import org.game.Player;
 
-import javax.swing.ImageIcon;
-import java.awt.Rectangle;
-import java.awt.Graphics2D;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.Objects;
 
 /**
  * The Dog class represents an enemy dog entity in the game.
@@ -40,7 +49,7 @@ public class Dog extends Enemy implements Serializable {
     private static final String DOG_FILE_NAME_RIGHT_2 = "/dog2.png";
 
     /**
-     * The frequency value for the dog.
+     * The frequency value for the dog moving.
      */
     private static final int FREQUENCY = 10;
 
@@ -69,53 +78,53 @@ public class Dog extends Enemy implements Serializable {
      */
     private static final int DAMAGE_VALUE = 2;
     /**
-     * The image icon for the character facing right.
+     * The image icon for the dog facing right.
      */
     private ImageIcon imageRight;
 
     /**
-     * The second image icon for the character facing right.
+     * The second image icon for the dog facing right.
      */
     private ImageIcon imageRight2;
 
     /**
-     * The image icon for the character facing left.
+     * The image icon for the dog facing left.
      */
     private ImageIcon imageLeft;
 
     /**
-     * The second image icon for the character facing left.
+     * The second image icon for the dog facing left.
      */
     private ImageIcon imageLeft2;
 
     /**
-     * The current image icon for the character.
+     * The current image icon for the dog.
      */
     private ImageIcon image;
 
     /**
-     * The count of movements made by the character.
+     * The count of movements made by the dog.
      */
     private int moveCount = 0;
 
     /**
-     * Flag indicating the character's facing direction
+     * Flag indicating the dog's facing direction
      * (true for right, false for left).
      */
     private boolean rightDirection;
 
     /**
-     * The amount of movement made by the character.
+     * The amount of movement made by the dog.
      */
     private int move = 0;
 
     /**
-     * The speed of the character's movement.
+     * The speed of the dog's movement.
      */
     private int speed = 0;
 
     /**
-     * The count of directions the character has moved.
+     * The count of directions the dog has moved.
      */
     private int countDirection;
 
@@ -136,17 +145,17 @@ public class Dog extends Enemy implements Serializable {
     }
 
     private void setImage(final Dog dog) {
-        URL img = Objects.
-                requireNonNull(getClass().getResource(DOG_FILE_NAME_RIGHT));
+        URL img = Objects
+                .requireNonNull(getClass().getResource(DOG_FILE_NAME_RIGHT));
         dog.imageRight = new ImageIcon(img);
-        img = Objects.
-                requireNonNull(getClass().getResource(DOG_FILE_NAME_LEFT));
+        img = Objects
+                .requireNonNull(getClass().getResource(DOG_FILE_NAME_LEFT));
         dog.imageLeft = new ImageIcon(img);
-        img = Objects.
-                requireNonNull(getClass().getResource(DOG_FILE_NAME_LEFT_2));
+        img = Objects
+                .requireNonNull(getClass().getResource(DOG_FILE_NAME_LEFT_2));
         dog.imageLeft2 = new ImageIcon(img);
-        img = Objects.
-                requireNonNull(getClass().getResource(DOG_FILE_NAME_RIGHT_2));
+        img = Objects
+                .requireNonNull(getClass().getResource(DOG_FILE_NAME_RIGHT_2));
         dog.imageRight2 = new ImageIcon(img);
     }
 
@@ -174,32 +183,63 @@ public class Dog extends Enemy implements Serializable {
         moveCount++;
     }
 
+    /**
+     * Draws the dog from image.
+     *
+     * @param g2d The graphics context.
+     */
     @Override
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 
+    /**
+     * Retrieves the bounding rectangle of the dog.
+     *
+     * @return The bounding rectangle.
+     */
     @Override
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
+    /**
+     * Takes the amount of damage from player.
+     *
+     * @param playerDamage the amount of damage to take
+     * @see Player
+     */
     @Override
     public void takeDamage(final int playerDamage) {
         int dogHealth = getHealth();
         setHealth(dogHealth - playerDamage);
     }
 
+    /**
+     * Attacks player by method in class Player.
+     *
+     * @param player the player to attack
+     * @see Player
+     */
     @Override
     public void attack(final Player player) {
         player.takeDamage(getDamage(), this);
     }
 
+    /**
+     * Checks if the dog is alive.
+     *
+     * @return true if the health is not over yet, false otherwise
+     */
     @Override
     public boolean isAlive() {
         return getHealth() > 0;
     }
 
+    /**
+     * Moving the dog from side to side
+     * with the change of direction of the picture.
+     */
     @Override
     public void move() {
         if (speed % FREQUENCY == 0) {

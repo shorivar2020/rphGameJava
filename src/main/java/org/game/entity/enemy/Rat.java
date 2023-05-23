@@ -1,3 +1,11 @@
+/**
+ * This is a class for enemies type rat
+ *
+ * @version 1.0
+ * @author shorivar
+ * @see org.game.entity.enemy
+ * @since 1.0
+ */
 package org.game.entity.enemy;
 
 import lombok.Getter;
@@ -20,64 +28,64 @@ import java.util.Objects;
 @Getter
 public class Rat extends Enemy implements Serializable {
     /**
-     * The file name of the dog's right-facing image.
+     * The file name of the rat's right-facing image.
      */
     private static final String RAT_FILE_NAME_LEFT = "/rat_left.png";
     /**
-     * The file name of the dog's second right-facing image.
+     * The file name of the rat's second right-facing image.
      */
     private static final String RAT_FILE_NAME_RIGHT = "/rat.png";
     /**
-     * The frequency value for the dog.
+     * The frequency value for the rat.
      */
     private static final int FREQUENCY = 15;
     /**
-     * The pitch range value for the dog.
+     * The pitch range value for the rat.
      */
     private static final int PITCH_RANGE = 5;
     /**
-     * The walking range value for the dog.
+     * The walking range value for the rat.
      */
     private static final int WALKING_RANGE = 10;
     /**
-     * The size value of the dog.
+     * The size value of the rat.
      */
     private static final int SIZE = 25;
     /**
-     * The health value of the dog.
+     * The health value of the rat.
      */
     private static final int HEALTH_VALUE = 1;
     /**
-     * The damage value inflicted by the dog.
+     * The damage value inflicted by the rat.
      */
     private static final int DAMAGE_VALUE = 1;
     /**
-     * The amount of movement made by the character.
+     * The amount of movement made by the rat.
      */
     private int move = 0;
     /**
-     * The speed of the character's movement.
+     * The speed of the rat's movement.
      */
     private int speed = 0;
     /**
-     * The image icon for the character facing right.
+     * The image icon for the rat facing right.
      */
     private ImageIcon imageRight;
     /**
-     * The image icon for the character facing left.
+     * The image icon for the rat facing left.
      */
     private ImageIcon imageLeft;
     /**
-     * The current image icon for the character.
+     * The current image icon for the rat.
      */
     private ImageIcon image;
     /**
-     * Flag indicating the character's facing direction
+     * Flag indicating the rat's facing direction
      * (true for right, false for left).
      */
     private boolean rightDirection;
     /**
-     * The count of directions the character has moved.
+     * The count of directions the rat has moved.
      */
     private int countDirection;
 
@@ -98,7 +106,7 @@ public class Rat extends Enemy implements Serializable {
     }
 
     private void setImage(final Rat rat) {
-        URL img =  Objects.
+        URL img = Objects.
                 requireNonNull(getClass().getResource(RAT_FILE_NAME_RIGHT));
         rat.imageRight = new ImageIcon(img);
         img = Objects.
@@ -115,32 +123,57 @@ public class Rat extends Enemy implements Serializable {
         g2d.drawImage(image.getImage(), getX(), getY(), null);
     }
 
+    /**
+     * Retrieves the bounding rectangle of the rat.
+     *
+     * @return The bounding rectangle.
+     */
     @Override
     public Rectangle getBounds() {
         return new Rectangle(getX(), getY(), getWidth(), getHeight());
     }
 
+    /**
+     * Takes the amount of damage from player.
+     *
+     * @param playerDamage the amount of damage to take
+     * @see Player
+     */
     @Override
     public void takeDamage(final int playerDamage) {
         int ratHealth = getHealth();
         setHealth(ratHealth - playerDamage);
     }
 
+    /**
+     * Attacks player by method in class Player.
+     *
+     * @param player the player to attack
+     * @see Player
+     */
     @Override
     public void attack(final Player player) {
         player.takeDamage(getDamage(), this);
     }
 
+    /**
+     * Checks if the rat is alive.
+     *
+     * @return true if the health is not over yet, false otherwise
+     */
     @Override
     public boolean isAlive() {
         return getHealth() > 0;
     }
 
+    /**
+     * Moving the rat from side to side
+     * with the change of direction of the picture.
+     */
     @Override
     public void move() {
         if (speed % FREQUENCY == 0) {
             countDirection++;
-
             int xLocal = this.getX();
             this.setX(xLocal);
             if (!rightDirection) {
