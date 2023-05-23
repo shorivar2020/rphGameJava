@@ -18,12 +18,12 @@ public abstract class Collar extends Item {
     /**
      * The health value of the character.
      */
-    private int health;
+    int health;
 
     /**
      * The damage value of the character.
      */
-    private int damage;
+    int damage;
 
     /**
      * Returns the damage value of the collar.
