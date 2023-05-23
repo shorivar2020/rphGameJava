@@ -22,17 +22,17 @@ import java.util.Objects;
 @Getter
 public class InterfaceBar {
     /**
-     * The size of a block in pixels.
+     * The size of a block of objects on map.
      */
     public static final int BLOCK_SIZE = 30;
 
     /**
-     * The starting position of the blocks.
+     * The starting position for interface.
      */
     public static final int BLOCK_START = 10;
 
     /**
-     * The size of a heart icon in pixels.
+     * The size of a heart icon.
      */
     public static final int HEART_SIZE = 25;
 
@@ -101,7 +101,6 @@ public class InterfaceBar {
             int x = BLOCK_START;
             int y = BLOCK_START;
             for (Item item : inventoryItems) {
-                //Change location from map to inventory
                 item.setX(x);
                 item.setY(y);
                 item.draw(g2d);

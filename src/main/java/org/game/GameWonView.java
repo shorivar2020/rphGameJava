@@ -36,20 +36,20 @@ public class GameWonView implements Serializable {
     }
 
     /**
-     * Sets the image for the game won view.
+     * Sets the image for the gameWonView.
      *
-     * @param t The GameWonView object to set the image for.
+     * @param gameWonView The GameWonView object to set the image for
      */
-    public void setImage(final GameWonView t) {
+    public void setImage(final GameWonView gameWonView) {
         URL img = Objects.
                 requireNonNull(getClass().getResource(GAME_WON_VIEW_NAME_FILE));
-        t.image = new ImageIcon(img);
+        gameWonView.image = new ImageIcon(img);
     }
 
     /**
-     * Draws the game won view on the specified graphics context.
+     * Draws the gameWonView on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), START_WINDOW, START_WINDOW, null);

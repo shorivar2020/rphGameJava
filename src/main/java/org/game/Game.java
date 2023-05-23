@@ -60,7 +60,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private transient Thread thread;
 
     /**
-     * A flag indicating whether the task is currently running.
+     * A flag indicating if thread is currently running.
      */
     private boolean running;
     /**
@@ -99,9 +99,10 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private List<Enemy> enemies;
 
     /**
-     * The exit object representing the exit point of the game map.
+     * The exit object representing the exit from the game map.
      */
     private Exit exit;
+
     /**
      * The view displayed when the game is lost.
      */
@@ -113,22 +114,22 @@ public class Game extends JPanel implements Runnable, KeyListener {
     private final GameWonView wonDisplay;
 
     /**
-     * A flag indicating whether the left arrow key is pressed.
+     * A flag indicating whether the left key is pressed.
      */
     private boolean leftPressed;
 
     /**
-     * A flag indicating whether the right arrow key is pressed.
+     * A flag indicating whether the right key is pressed.
      */
     private boolean rightPressed;
 
     /**
-     * A flag indicating whether the up arrow key is pressed.
+     * A flag indicating whether the up key is pressed.
      */
     private boolean upPressed;
 
     /**
-     * A flag indicating whether the down arrow key is pressed.
+     * A flag indicating whether the down key is pressed.
      */
     private boolean downPressed;
 
@@ -146,10 +147,12 @@ public class Game extends JPanel implements Runnable, KeyListener {
      * The interface bar object that handles the game's interface.
      */
     private static InterfaceBar interfaceBar = new InterfaceBar();
+
     /**
      * A boolean flag indicating whether the inventory is currently being shown.
      */
     private boolean showingInventory;
+
     /**
      * A boolean flag indicating logging information about game.
      */
@@ -158,7 +161,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     /**
      * Set screen settings, add player and obstacles.
      *
-     * @param eLog flag indicate logging of game
+     * @param eLog Flag indicate logging of game
      */
     public Game(final boolean eLog) {
         setEnableLogging(eLog);
@@ -275,7 +278,7 @@ public class Game extends JPanel implements Runnable, KeyListener {
     public void loseGame() {
         gameFinishLose = true;
         if (enableLogging) {
-            log.log(Level.FINE, "Player lost the game");
+            log.log(Level.FINE, "Player lose the game");
         }
     }
 

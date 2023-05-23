@@ -9,21 +9,23 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * The window that will be displayed in the case of health reduction to 0.
+ * The window that will be displayed in the case of player die and lose game.
  */
 @Log
 public class GameOverView implements Serializable {
+
     /**
-     * The file name of the game win view image.
+     * The file name of the game lose view image.
      */
     private static final String NAME_FILE = "/game_over.png";
+
     /**
      * The starting window value.
      */
     private static final int START_WINDOW = 0;
 
     /**
-     * The image associated with the game win view.
+     * The image associated with the game lose view.
      */
     private ImageIcon image;
 
@@ -35,20 +37,20 @@ public class GameOverView implements Serializable {
     }
 
     /**
-     * Sets the image for the game over view.
+     * Sets the image for the gameOverView.
      *
-     * @param t The GameOverView object to set the image for.
+     * @param gameOverView The GameOverView object to set the image for
      */
-    public void setImage(final GameOverView t) {
+    public void setImage(final GameOverView gameOverView) {
         URL img = Objects.
                 requireNonNull(getClass().getResource(NAME_FILE));
-        t.image = new ImageIcon(img);
+        gameOverView.image = new ImageIcon(img);
     }
 
     /**
-     * Draws the game over view on the specified graphics context.
+     * Draws the gameOverView on the specified graphics context.
      *
-     * @param g2d The graphics context.
+     * @param g2d The graphics context
      */
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), START_WINDOW, START_WINDOW, null);
