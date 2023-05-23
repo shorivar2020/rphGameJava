@@ -46,6 +46,7 @@ public class Background extends Entity implements Serializable {
      * The file name for the cushion texture.
      */
     private static final String CUSHION_FILE_NAME = "/cushion.png";
+
     /**
      * The image associated with the game win view.
      */

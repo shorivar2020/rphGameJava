@@ -15,6 +15,7 @@ import java.awt.Rectangle;
 @Getter
 @Setter
 public abstract class Entity {
+
     /**
      * The x-coordinate of the top-left corner of the rectangle.
      */

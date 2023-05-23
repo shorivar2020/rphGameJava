@@ -19,6 +19,7 @@ import java.util.Objects;
 @Getter
 @Setter
 public class Exit extends Entity implements Serializable {
+
     /**
      * The size of the exit.
      */
