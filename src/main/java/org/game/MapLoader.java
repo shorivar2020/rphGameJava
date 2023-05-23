@@ -158,7 +158,7 @@ public class MapLoader {
                     case '+' -> map[col][row] = 10; // food
                     case 'g' -> map[col][row] = 'g'; // grass
                     case 'f' -> map[col][row] = 'f'; // floor
-                    case 'w' -> map[col][row] = 'w';
+                    case 'w' -> map[col][row] = 'w'; //water
                     default -> {
                         if (eLog) {
                             log.log(Level.WARNING, "Undefined part of map");
