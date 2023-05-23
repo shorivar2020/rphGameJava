@@ -380,19 +380,10 @@ public class Player implements Serializable {
     public void moveLeft(final Game game, final List<Obstacle> obstacles,
                          final List<Door> doors, final Exit exit) {
         setImageL(this);
-        if (checkObstacle(game, obstacles, doors, exit,
-                new Rectangle(x - SPEED, y, SIZE, SIZE))) {
+        if ((checkObstacle(game, obstacles, doors, exit,
+                new Rectangle(x - SPEED, y, SIZE, SIZE)))
+                || (!leftCollision && !doorCollision)) {
             x -= SPEED;
-            if (enableLogging) {
-                log.log(Level.FINEST, "Change positioning of the player left");
-            }
-        } else {
-            if (!leftCollision && !doorCollision) {
-                x -= SPEED;
-                if (enableLogging) {
-                    log.log(Level.FINEST, "Change positioning left");
-                }
-            }
         }
     }
 
@@ -410,21 +401,11 @@ public class Player implements Serializable {
                           final List<Door> doors,
                           final Exit exit) {
         setImage(this);
-        if (checkObstacle(game, obstacles, doors, exit,
-                new Rectangle(x - SPEED, y, SIZE, SIZE))) {
+        if ((checkObstacle(game, obstacles, doors, exit,
+                new Rectangle(x - SPEED, y, SIZE, SIZE)))
+                || (!rightCollision)) {
             x += SPEED;
-            if (enableLogging) {
-                log.log(Level.FINEST, "Change positioning of the player right");
-            }
-        } else {
-            if (!rightCollision) {
-                x += SPEED;
-                if (enableLogging) {
-                    log.log(Level.FINEST, "Change positioning right");
-                }
-            }
         }
-
     }
 
     /**
@@ -441,19 +422,10 @@ public class Player implements Serializable {
                        final List<Door> doors,
                        final Exit exit) {
         setImageB(this);
-        if (checkObstacle(game, obstacles, doors, exit,
-                new Rectangle(x - SPEED, y, SIZE, SIZE))) {
+        if ((checkObstacle(game, obstacles, doors, exit,
+                new Rectangle(x - SPEED, y, SIZE, SIZE)))
+                || (!upCollision && !doorCollision)) {
             y -= SPEED;
-            if (enableLogging) {
-                log.log(Level.FINEST, "Change positioning of the player up");
-            }
-        } else {
-            if (!upCollision && !doorCollision) {
-                y -= SPEED;
-                if (enableLogging) {
-                    log.log(Level.FINEST, "Change positioning up");
-                }
-            }
         }
     }
 
@@ -471,21 +443,10 @@ public class Player implements Serializable {
                          final List<Door> doors,
                          final Exit exit) {
         setImageA(this);
-        if (checkObstacle(game, obstacles, doors, exit,
-                new Rectangle(x - SPEED, y, SIZE, SIZE))) {
+        if ((checkObstacle(game, obstacles, doors, exit,
+                new Rectangle(x - SPEED, y, SIZE, SIZE))) || (!downCollision)) {
             y += SPEED;
-            if (enableLogging) {
-                log.log(Level.FINEST, "Change positioning of the player down");
-            }
-        } else {
-            if (!downCollision) {
-                y += SPEED;
-                if (enableLogging) {
-                    log.log(Level.FINEST, "Change positioning down");
-                }
-            }
         }
-
     }
 
     /**
@@ -503,20 +464,17 @@ public class Player implements Serializable {
      * @param e The player object.
      */
     public void setImage(final Player e) {
+        URL img;
         if (moveCount % 2 == 0) {
-            URL img = Objects.
+            img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_RIGHT_1));
-            e.image = new ImageIcon(img);
-            if (enableLogging) {
-                log.log(Level.FINER, "Set image of player №1 right");
-            }
         } else {
-            URL img = Objects.
+            img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_RIGHT_2));
-            e.image = new ImageIcon(img);
-            if (enableLogging) {
-                log.log(Level.FINER, "Set image of player №2 right");
-            }
+        }
+        e.image = new ImageIcon(img);
+        if (enableLogging) {
+            log.log(Level.FINER, "Set new image of player right");
         }
         moveCount++;
     }
@@ -555,20 +513,17 @@ public class Player implements Serializable {
      * @param e The player object.
      */
     public void setImageL(final Player e) {
+        URL img;
         if (moveCount % 2 != 0) {
-            URL img = Objects.
+            img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_LEFT_1));
-            e.image = new ImageIcon(img);
-            if (enableLogging) {
-                log.log(Level.FINER, "Set image of player №1 left");
-            }
         } else {
-            URL img = Objects.
+            img = Objects.
                     requireNonNull(getClass().getResource(FILE_NAME_LEFT_2));
-            e.image = new ImageIcon(img);
-            if (enableLogging) {
-                log.log(Level.FINER, "Set image of player №2 left");
-            }
+        }
+        e.image = new ImageIcon(img);
+        if (enableLogging) {
+            log.log(Level.FINER, "Set image of player left");
         }
         moveCount++;
     }
@@ -578,7 +533,6 @@ public class Player implements Serializable {
      *
      * @param g2d The graphics context.
      */
-
     public void draw(final Graphics2D g2d) {
         g2d.drawImage(image.getImage(), x, y, null);
     }
@@ -587,7 +541,7 @@ public class Player implements Serializable {
      * Wears the given collar,
      * adding its health and damage values to the player.
      *
-     * @param collar The collar item to be worn.
+     * @param collar The collar item to be worn
      */
     void wear(final Collar collar) {
         if (enableLogging) {
@@ -600,7 +554,7 @@ public class Player implements Serializable {
     /**
      * Eats the given food item, increasing the player's health.
      *
-     * @param food The food item to be eaten.
+     * @param food The food item to be eaten
      */
     void eat(final Food food) {
         if (enableLogging) {
@@ -612,8 +566,8 @@ public class Player implements Serializable {
     /**
      * Takes damage from an enemy and attacks the enemy in return.
      *
-     * @param enemyDamage The amount of damage to be taken.
-     * @param enemy       The enemy that is attacking the player.
+     * @param enemyDamage The amount of damage to be taken
+     * @param enemy       The enemy that is attacking the player
      */
     public void takeDamage(final int enemyDamage, final Enemy enemy) {
         if (enableLogging) {
@@ -624,13 +578,13 @@ public class Player implements Serializable {
     }
 
     /**
-     * Attacks an enemy with a random damage value.
+     * Attacks an enemy with a damage value.
      *
-     * @param enemy The enemy to be attacked.
+     * @param enemy The enemy to be attacked
      */
     public void attackEnemy(final Enemy enemy) {
         if (enableLogging) {
-            log.log(Level.FINE, "Player attack enemy, use random for damage");
+            log.log(Level.FINE, "Player attack enemy");
         }
         enemy.takeDamage(damage);
     }
@@ -662,7 +616,7 @@ public class Player implements Serializable {
     /**
      * Take all items from inventory and save it in file.
      *
-     * @param itemList The current list of items.
+     * @param itemList The current list of items
      */
     public void saveItemsInFile(final List<Item> itemList) {
         ObjectOutputStream out;
@@ -684,13 +638,10 @@ public class Player implements Serializable {
     /**
      * Finds a key item and adds it to the player's inventory.
      *
-     * @param game The current game object.
-     * @param key  The key item to be found.
+     * @param game The current game object
+     * @param key  The key item to be found
      */
     public void findKey(final Game game, final Key key) {
-        if (enableLogging) {
-            log.log(Level.FINE, "Player pick up key");
-        }
         inventory.add(key);
         if (enableLogging) {
             log.log(Level.FINER, "Add key in inventory");
@@ -703,13 +654,10 @@ public class Player implements Serializable {
     /**
      * Finds a food item and adds it to the player's inventory.
      *
-     * @param game The current game object.
-     * @param food The food item to be found.
+     * @param game The current game object
+     * @param food The food item to be found
      */
     public void findFood(final Game game, final Food food) {
-        if (enableLogging) {
-            log.log(Level.FINE, "Player pick up food");
-        }
         inventory.add(food);
         eat(food);
         if (enableLogging) {
@@ -721,16 +669,13 @@ public class Player implements Serializable {
     }
 
     /**
-     * Finds a silver collar item and adds it to the player's inventory.
+     * Finds a collar item and adds it to the player's inventory.
      *
-     * @param game   The current game object.
-     * @param collar The silver collar item to be found.
+     * @param game   The current game object
+     * @param collar The collar item to be found
      */
     public void findCollar(final Game game,
                            final Collar collar) {
-        if (enableLogging) {
-            log.log(Level.FINE, "Player pick up collar");
-        }
         inventory.add(collar);
         wear(collar);
         if (enableLogging) {
@@ -745,9 +690,9 @@ public class Player implements Serializable {
     /**
      * Interacts with a door.
      *
-     * @param door The door to interact with.
+     * @param door The door to interact with
      * @return {@code true} if the door is locked,
-     * {@code false} if it is unlocked.
+     * {@code false} if it is unlocked
      */
     public boolean interactWithDoor(final Door door) {
         for (Item item : inventory) {
@@ -778,27 +723,26 @@ public class Player implements Serializable {
      */
     public void interactWithObstacles(final Obstacle obstacle) {
         Rectangle intersection = obstacle.getBounds().intersection(newBounds);
-
+        //Finding player boundaries
         double width = intersection.getWidth();
         double height = intersection.getHeight();
-
+        //Finding obstacle center
         double obstacleX = obstacle.getBounds().getCenterX();
         double obstacleY = obstacle.getBounds().getCenterY();
-
+        //Find intersect
         double diffX = newBounds.getCenterX() - obstacleX;
         double diffY = newBounds.getCenterY() - obstacleY;
-
-        double dx = (diffX) / width;
-        double dy = (diffY) / height;
-
-        if (Math.abs(dx) > Math.abs(dy)) {
-            if (dx < 0) {
+        double countedX = (diffX) / width;
+        double countedY = (diffY) / height;
+        //Find where intersect
+        if (Math.abs(countedX) > Math.abs(countedY)) {
+            if (countedX < 0) {
                 rightCollision = true;
             } else {
                 leftCollision = true;
             }
         } else {
-            if (dy < 0) {
+            if (countedY < 0) {
                 downCollision = true;
             } else {
                 upCollision = true;
