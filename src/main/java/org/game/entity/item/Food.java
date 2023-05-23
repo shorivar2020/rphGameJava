@@ -1,3 +1,10 @@
+/**
+ * Objects, that interact with player
+ *
+ * @version 1.0
+ * @see Item
+ * @since 1.0
+ */
 package org.game.entity.item;
 
 import lombok.Getter;
@@ -12,13 +19,14 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * The Food class represents a food item in the game.
- * It extends the Item class and implements Serializable.
+ * The Food class represents food in the game.
+ * It extends the Item class.
  */
 @Log
 @Setter
 @Getter
 public class Food extends Item implements Serializable {
+
     /**
      * The file name for the food texture.
      */

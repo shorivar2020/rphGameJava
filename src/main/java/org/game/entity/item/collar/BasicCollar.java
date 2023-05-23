@@ -1,3 +1,10 @@
+/**
+ * Package of game with item type of collar.
+ *
+ * @version 1.0
+ * @see Collar
+ * @since 1.0
+ */
 package org.game.entity.item.collar;
 
 import lombok.Getter;
@@ -73,6 +80,11 @@ public class BasicCollar extends Collar {
         g2d.drawImage(image.getImage(), START_X, START_Y, null);
     }
 
+    /**
+     * Returns the bounding rectangle of the basic collar.
+     *
+     * @return the bounding rectangle of the basic collar
+     */
     @Override
     public Rectangle getBounds() {
         return new Rectangle(START_X, START_Y, getWidth(), getHeight());

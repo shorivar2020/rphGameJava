@@ -1,3 +1,10 @@
+/**
+ * Objects, that interact with player
+ *
+ * @version 1.0
+ * @see Item
+ * @since 1.0
+ */
 package org.game.entity.item;
 
 import lombok.Getter;
@@ -12,8 +19,8 @@ import java.net.URL;
 import java.util.Objects;
 
 /**
- * The Key class represents a key item in the game.
- * It extends the Item class and implements Serializable.
+ * The Key class represents a key in the game.
+ * It extends the Item class.
  */
 @Log
 @Getter
@@ -42,8 +49,8 @@ public class Key extends Item implements Serializable {
     /**
      * Constructs a Key object with the specified position and door number.
      *
-     * @param x          The x-coordinate of the key's position.
-     * @param y          The y-coordinate of the key's position.
+     * @param x    The x-coordinate of the key's position.
+     * @param y    The y-coordinate of the key's position.
      * @param dNum The door number associated with the key.
      */
     public Key(final int x, final int y, final int dNum) {
